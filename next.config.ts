@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
+const isNetlify = process.env.NETLIFY === "true";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  ...(isNetlify
+    ? {
+        output: "export",
+        images: { unoptimized: true },
+      }
+    : {}),
 };
 
 export default nextConfig;
