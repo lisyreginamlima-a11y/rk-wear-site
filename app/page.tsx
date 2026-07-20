@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Product = {
   id: number;
@@ -11,7 +11,15 @@ type Product = {
   colors: string[];
   reference?: string;
   sizes?: string;
+  sizeOptions: string[];
+  description: string;
   available?: boolean;
+};
+
+type CartLine = {
+  productId: number;
+  quantity: number;
+  size: string;
 };
 
 const products: Product[] = [
@@ -23,6 +31,9 @@ const products: Product[] = [
     tag: "Lançamento",
     colors: ["#151515"],
     sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto versátil com visual urbano e confortável, pensado para acompanhar sua rotina com estilo.",
   },
   {
     id: 2,
@@ -33,6 +44,9 @@ const products: Product[] = [
     colors: ["#111111"],
     reference: "0576",
     sizes: "P · M · G",
+    sizeOptions: ["P", "M", "G"],
+    description:
+      "Calça de presença marcante, acabamento elegante e modelagem contemporânea para produções sofisticadas.",
   },
   {
     id: 3,
@@ -43,6 +57,9 @@ const products: Product[] = [
     colors: ["#684a38", "#171717", "#f3eee5", "#702f3a"],
     reference: "Aura 045 · Brisa 048",
     sizes: "P · M · G",
+    sizeOptions: ["P", "M", "G"],
+    description:
+      "Composição leve e feminina que une textura, movimento e tons terrosos em uma proposta autoral.",
   },
   {
     id: 4,
@@ -53,6 +70,9 @@ const products: Product[] = [
     colors: ["#1d1d1d", "#8a837b"],
     reference: "040",
     sizes: "P · M",
+    sizeOptions: ["P", "M"],
+    description:
+      "Conjunto xadrez de alfaiataria leve, criado para transitar entre ocasiões com elegância natural.",
   },
   {
     id: 5,
@@ -61,6 +81,9 @@ const products: Product[] = [
     image: "/instagram/conjunto-renda-cacau.jpg",
     colors: ["#744526"],
     sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Renda delicada em tom cacau, com uma leitura romântica e atual para momentos especiais.",
   },
   {
     id: 6,
@@ -70,6 +93,9 @@ const products: Product[] = [
     tag: "Edição limitada",
     colors: ["#d8bee1"],
     sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Edição limitada em lilás suave, com caimento leve e acabamento feminino para um visual memorável.",
   },
   {
     id: 7,
@@ -79,6 +105,9 @@ const products: Product[] = [
     tag: "Esgotado",
     colors: ["#e3d229", "#386b45"],
     sizes: "Edição exclusiva",
+    sizeOptions: [],
+    description:
+      "Vestido exclusivo inspirado nas cores do Brasil, produzido em quantidade limitada.",
     available: false,
   },
 ];
@@ -86,10 +115,25 @@ const products: Product[] = [
 export default function Home() {
   const [category, setCategory] = useState("Todos");
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [cart, setCart] = useState<Record<number, number>>({});
+  const [cart, setCart] = useState<CartLine[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [detailQuantity, setDetailQuantity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setSelectedProduct(null);
+      setCartOpen(false);
+      setMenuOpen(false);
+    }
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, []);
 
   const filtered = useMemo(
     () =>
@@ -99,32 +143,60 @@ export default function Home() {
     [category],
   );
 
-  const cartItems = products
-    .filter((product) => cart[product.id])
-    .map((product) => ({ ...product, quantity: cart[product.id] }));
+  const cartItems = cart.flatMap((line) => {
+    const product = products.find((item) => item.id === line.productId);
+    return product ? [{ ...product, ...line }] : [];
+  });
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const checkoutMessage = encodeURIComponent(
     `Olá, RK WEAR! Tenho interesse nestas peças:\n${cartItems
-      .map((item) => `• ${item.name} (${item.quantity}x)`)
+      .map(
+        (item) =>
+          `• ${item.name} — tamanho ${item.size} (${item.quantity}x)`,
+      )
       .join("\n")}\n\nPode me informar valores, cores e tamanhos disponíveis?`,
   );
 
-  function addToCart(product: Product) {
+  function openProduct(product: Product) {
+    setSelectedProduct(product);
+    setSelectedSize(product.sizeOptions[0] || "");
+    setDetailQuantity(1);
+  }
+
+  function addToCart(product: Product, size: string, quantity = 1) {
     if (product.available === false) return;
-    setCart((current) => ({
-      ...current,
-      [product.id]: (current[product.id] || 0) + 1,
-    }));
+    setCart((current) => {
+      const existing = current.find(
+        (line) => line.productId === product.id && line.size === size,
+      );
+
+      if (!existing) {
+        return [
+          ...current,
+          { productId: product.id, quantity, size: size || "A confirmar" },
+        ];
+      }
+
+      return current.map((line) =>
+        line.productId === product.id && line.size === size
+          ? { ...line, quantity: line.quantity + quantity }
+          : line,
+      );
+    });
+    setSelectedProduct(null);
     setCartOpen(true);
   }
 
-  function updateQuantity(id: number, change: number) {
-    setCart((current) => {
-      const next = Math.max(0, (current[id] || 0) + change);
-      const updated = { ...current, [id]: next };
-      if (next === 0) delete updated[id];
-      return updated;
-    });
+  function updateQuantity(productId: number, size: string, change: number) {
+    setCart((current) =>
+      current
+        .map((line) =>
+          line.productId === productId && line.size === size
+            ? { ...line, quantity: Math.max(0, line.quantity + change) }
+            : line,
+        )
+        .filter((line) => line.quantity > 0),
+    );
   }
 
   function toggleFavorite(id: number) {
@@ -255,7 +327,13 @@ export default function Home() {
           {filtered.map((product) => (
             <article className="product-card" key={product.id}>
               <div className="product-image-wrap">
-                <img src={product.image} alt={product.name} loading="lazy" />
+                <button
+                  className="product-open"
+                  onClick={() => openProduct(product)}
+                  aria-label={`Ver detalhes de ${product.name}`}
+                >
+                  <img src={product.image} alt={product.name} loading="lazy" />
+                </button>
                 {product.tag && <span className="product-tag">{product.tag}</span>}
                 <button
                   className={`favorite ${
@@ -272,22 +350,20 @@ export default function Home() {
                 </button>
                 <button
                   className="quick-add"
-                  onClick={() => addToCart(product)}
-                  disabled={product.available === false}
-                  aria-label={
-                    product.available === false
-                      ? `${product.name} esgotado`
-                      : `Adicionar ${product.name} à seleção`
-                  }
+                  onClick={() => openProduct(product)}
+                  aria-label={`Ver detalhes de ${product.name}`}
                 >
-                  {product.available === false
-                    ? "Esgotado"
-                    : "Tenho interesse"}
+                  {product.available === false ? "Ver peça" : "Ver detalhes"}
                 </button>
               </div>
               <div className="product-info">
                 <div>
-                  <h3>{product.name}</h3>
+                  <button
+                    className="product-name"
+                    onClick={() => openProduct(product)}
+                  >
+                    <h3>{product.name}</h3>
+                  </button>
                   <span>
                     {product.category}
                     {product.reference ? ` · Ref. ${product.reference}` : ""}
@@ -588,6 +664,137 @@ export default function Home() {
         <strong>WhatsApp</strong>
       </a>
 
+      {selectedProduct && (
+        <div
+          className="product-modal-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setSelectedProduct(null);
+          }}
+        >
+          <section
+            className="product-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-modal-title"
+          >
+            <button
+              className="product-modal-close"
+              onClick={() => setSelectedProduct(null)}
+              aria-label="Fechar detalhes da peça"
+            >
+              ×
+            </button>
+
+            <div className="product-modal-media">
+              <img src={selectedProduct.image} alt={selectedProduct.name} />
+              {selectedProduct.tag && (
+                <span className="product-tag">{selectedProduct.tag}</span>
+              )}
+            </div>
+
+            <div className="product-modal-copy">
+              <p className="eyebrow">{selectedProduct.category}</p>
+              <h2 id="product-modal-title">{selectedProduct.name}</h2>
+              {selectedProduct.reference && (
+                <p className="product-reference">
+                  Referência {selectedProduct.reference}
+                </p>
+              )}
+              <p className="product-description">{selectedProduct.description}</p>
+
+              <div className="product-modal-colors">
+                <span>Cores</span>
+                <div className="swatches" aria-label="Cores da peça">
+                  {selectedProduct.colors.map((color) => (
+                    <span key={color} style={{ backgroundColor: color }} />
+                  ))}
+                </div>
+              </div>
+
+              {selectedProduct.available === false ? (
+                <div className="sold-out-message">
+                  Esta peça está esgotada no momento. Fale conosco para conhecer
+                  opções semelhantes.
+                </div>
+              ) : (
+                <>
+                  <fieldset className="size-picker">
+                    <legend>Escolha o tamanho</legend>
+                    <div>
+                      {selectedProduct.sizeOptions.map((size) => (
+                        <button
+                          type="button"
+                          key={size}
+                          className={selectedSize === size ? "active" : ""}
+                          onClick={() => setSelectedSize(size)}
+                          aria-pressed={selectedSize === size}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+
+                  <div className="product-buy-row">
+                    <div className="detail-quantity" aria-label="Quantidade">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDetailQuantity((quantity) =>
+                            Math.max(1, quantity - 1),
+                          )
+                        }
+                        aria-label="Diminuir quantidade"
+                      >
+                        −
+                      </button>
+                      <span>{detailQuantity}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setDetailQuantity((quantity) => quantity + 1)
+                        }
+                        aria-label="Aumentar quantidade"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <strong>Valor sob consulta</strong>
+                  </div>
+
+                  <button
+                    className="button button-dark product-add-button"
+                    onClick={() =>
+                      addToCart(
+                        selectedProduct,
+                        selectedSize,
+                        detailQuantity,
+                      )
+                    }
+                  >
+                    Adicionar à sacola
+                  </button>
+                </>
+              )}
+
+              <a
+                className="product-direct-contact"
+                href={`https://wa.me/5511953836092?text=${encodeURIComponent(
+                  `Olá, RK WEAR! Gostaria de saber mais sobre ${selectedProduct.name}.`,
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Tirar dúvida pelo WhatsApp
+              </a>
+              <p className="product-service-note">
+                Atendimento personalizado · Envio para todo o Brasil
+              </p>
+            </div>
+          </section>
+        </div>
+      )}
+
       <div
         className={`drawer-overlay ${cartOpen ? "is-open" : ""}`}
         onClick={() => setCartOpen(false)}
@@ -622,22 +829,22 @@ export default function Home() {
           <>
             <div className="cart-items">
               {cartItems.map((item) => (
-                <article key={item.id}>
+                <article key={`${item.id}-${item.size}`}>
                   <img src={item.image} alt="" />
                   <div>
                     <h3>{item.name}</h3>
-                    <span>{item.sizes}</span>
+                    <span>Tamanho: {item.size}</span>
                     <strong>Valor sob consulta</strong>
                     <div className="quantity">
                       <button
-                        onClick={() => updateQuantity(item.id, -1)}
+                        onClick={() => updateQuantity(item.id, item.size, -1)}
                         aria-label={`Diminuir quantidade de ${item.name}`}
                       >
                         −
                       </button>
                       <span>{item.quantity}</span>
                       <button
-                        onClick={() => updateQuantity(item.id, 1)}
+                        onClick={() => updateQuantity(item.id, item.size, 1)}
                         aria-label={`Aumentar quantidade de ${item.name}`}
                       >
                         +
