@@ -201,7 +201,7 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-title">
         <img
           className="hero-profile-image"
-          src="/instagram/rk-profile.jpg"
+          src="/instagram/rk-cover-hd.png"
           alt="RK WEAR"
         />
         <h1 id="hero-title" className="sr-only">

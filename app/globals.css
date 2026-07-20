@@ -196,7 +196,7 @@ img {
 
 .hero-profile-image {
   display: block;
-  width: min(66vw, 760px);
+  width: 100%;
   height: auto;
   mix-blend-mode: normal;
 }
@@ -1327,7 +1327,7 @@ footer {
   }
 
   .hero-profile-image {
-    width: min(94vw, 540px);
+    width: 100%;
   }
 
   .hero-shade {
