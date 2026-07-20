@@ -830,6 +830,20 @@ button.button {
   font-size: 11px;
 }
 
+.service-contact {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.service-contact > a:last-child {
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
 .newsletter {
   padding: 120px 20px;
   display: flex;

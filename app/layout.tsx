@@ -15,9 +15,32 @@ const sans = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Valentina Atelier | Moda autoral brasileira",
+  metadataBase: new URL(
+    "https://valentina-atelier-moda.lisyreginamlima.chatgpt.site",
+  ),
+  title: "RK WEAR | Moda autoral brasileira",
   description:
     "Peças autorais, alfaiataria leve e essenciais feitos no Brasil para atravessar temporadas.",
+  openGraph: {
+    title: "RK WEAR | Moda autoral brasileira",
+    description:
+      "Peças autorais, alfaiataria leve e essenciais feitos no Brasil para atravessar temporadas.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1536,
+        height: 1024,
+        alt: "RK WEAR — moda autoral brasileira",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RK WEAR | Moda autoral brasileira",
+    description:
+      "Peças autorais, alfaiataria leve e essenciais feitos no Brasil para atravessar temporadas.",
+    images: ["/og.png"],
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

@@ -44,7 +44,7 @@ const products: Product[] = [
   },
   {
     id: 4,
-    name: "Calça Valentina",
+    name: "Calça Riviera",
     category: "Alfaiataria",
     price: 349,
     image:
@@ -162,9 +162,9 @@ export default function Home() {
       </div>
 
       <header className="site-header">
-        <a className="brand" href="#inicio" aria-label="Valentina Atelier">
-          <span>VALENTINA</span>
-          <small>ATELIER</small>
+        <a className="brand" href="#inicio" aria-label="RK WEAR">
+          <span>RK</span>
+          <small>WEAR</small>
         </a>
         <nav className={`main-nav ${menuOpen ? "is-open" : ""}`}>
           <button
@@ -392,7 +392,7 @@ export default function Home() {
       </section>
 
       <section className="manifesto" id="manifesto">
-        <div className="manifesto-mark">V</div>
+        <div className="manifesto-mark">RK</div>
         <p className="eyebrow light">Nosso manifesto</p>
         <blockquote>
           “Não criamos roupas para uma ocasião. Criamos peças para a mulher que
@@ -403,7 +403,7 @@ export default function Home() {
           materiais escolhidos para durar.
         </p>
         <a className="text-link light-link" href="#atendimento">
-          Conheça o Atelier <span>↗</span>
+          Conheça a RK WEAR <span>↗</span>
         </a>
       </section>
 
@@ -488,9 +488,17 @@ export default function Home() {
               </div>
             </li>
           </ol>
-          <a className="button button-dark" href="mailto:atendimento@valentinaatelier.com.br">
-            Falar com uma consultora
-          </a>
+          <div className="service-contact">
+            <a
+              className="button button-dark"
+              href="https://wa.me/5511953836092?text=Ol%C3%A1%2C%20RK%20WEAR!%20Gostaria%20de%20receber%20atendimento."
+              target="_blank"
+              rel="noreferrer"
+            >
+              Falar no WhatsApp
+            </a>
+            <a href="tel:+5511953836092">(11) 95383-6092</a>
+          </div>
         </div>
       </section>
 
@@ -498,7 +506,7 @@ export default function Home() {
         <p className="eyebrow">Entre para o nosso círculo</p>
         <h2>Novidades que valem abrir.</h2>
         <p>
-          Lançamentos em primeira mão, histórias do atelier e uma curadoria
+          Lançamentos em primeira mão, histórias da marca e uma curadoria
           mensal de estilo.
         </p>
         <form onSubmit={submitNewsletter}>
@@ -519,17 +527,29 @@ export default function Home() {
       <footer>
         <div className="footer-top">
           <a className="brand footer-brand" href="#inicio">
-            <span>VALENTINA</span>
-            <small>ATELIER</small>
+            <span>RK</span>
+            <small>WEAR</small>
           </a>
           <p>
             Moda autoral brasileira para mulheres que escolhem presença, sem
             abrir mão de conforto.
           </p>
           <div className="footer-social">
-            <a href="#inicio">Instagram</a>
+            <a
+              href="https://www.instagram.com/rkwear2026/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              @rkwear2026
+            </a>
             <a href="#inicio">Pinterest</a>
-            <a href="mailto:atendimento@valentinaatelier.com.br">E-mail</a>
+            <a
+              href="https://wa.me/5511953836092?text=Ol%C3%A1%2C%20RK%20WEAR!%20Gostaria%20de%20receber%20atendimento."
+              target="_blank"
+              rel="noreferrer"
+            >
+              WhatsApp
+            </a>
           </div>
         </div>
         <div className="footer-links">
@@ -548,7 +568,7 @@ export default function Home() {
             <a href="#atendimento">Fale conosco</a>
           </div>
           <div>
-            <strong>Atelier</strong>
+            <strong>RK WEAR</strong>
             <a href="#manifesto">Nossa história</a>
             <a href="#manifesto">Materiais</a>
             <a href="#manifesto">Produção consciente</a>
@@ -556,7 +576,7 @@ export default function Home() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 Valentina Atelier</span>
+          <span>© 2026 RK WEAR</span>
           <span>Feito no Brasil, com intenção.</span>
           <div>
             <a href="#inicio">Privacidade</a>
@@ -565,18 +585,16 @@ export default function Home() {
         </div>
       </footer>
 
-      <button
+      <a
         className="consult-button"
-        onClick={() =>
-          document
-            .querySelector("#atendimento")
-            ?.scrollIntoView({ behavior: "smooth" })
-        }
+        href="https://wa.me/5511953836092?text=Ol%C3%A1%2C%20RK%20WEAR!%20Gostaria%20de%20receber%20atendimento."
+        target="_blank"
+        rel="noreferrer"
         aria-label="Falar com uma consultora"
       >
         <span>✦</span>
-        <strong>Consultora</strong>
-      </button>
+        <strong>WhatsApp</strong>
+      </a>
 
       <div
         className={`drawer-overlay ${cartOpen ? "is-open" : ""}`}
@@ -598,7 +616,7 @@ export default function Home() {
         </div>
         {cartItems.length === 0 ? (
           <div className="empty-cart">
-            <span>V</span>
+            <span>RK</span>
             <h3>Sua sacola está leve.</h3>
             <p>Descubra peças pensadas para acompanhar muitas histórias.</p>
             <button
