@@ -6,95 +6,82 @@ type Product = {
   id: number;
   name: string;
   category: string;
-  price: number;
   image: string;
   tag?: string;
   colors: string[];
+  reference?: string;
+  sizes?: string;
+  available?: boolean;
 };
 
 const products: Product[] = [
   {
     id: 1,
-    name: "Blazer Aurora",
-    category: "Alfaiataria",
-    price: 489,
-    image:
-      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=88",
-    tag: "Mais vendido",
-    colors: ["#cbb8a1", "#1d1c1a"],
+    name: "Conjunto Fitness Black",
+    category: "RK Fitness",
+    image: "/instagram/fitness-black.jpg",
+    tag: "Lançamento",
+    colors: ["#151515"],
+    sizes: "Consulte tamanhos",
   },
   {
     id: 2,
-    name: "Vestido Serena",
-    category: "Noite",
-    price: 459,
-    image:
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=900&q=88",
-    tag: "Novo",
-    colors: ["#342d2a", "#a66f63"],
+    name: "Calça Courino Zara",
+    category: "Essência",
+    image: "/instagram/calca-courino-zara.jpg",
+    tag: "Ref. 0576",
+    colors: ["#111111"],
+    reference: "0576",
+    sizes: "P · M · G",
   },
   {
     id: 3,
-    name: "Camisa Lumière",
-    category: "Essenciais",
-    price: 259,
-    image:
-      "https://images.unsplash.com/photo-1605763240000-7e93b172d754?auto=format&fit=crop&w=900&q=88",
-    colors: ["#f2eee6", "#8d7566"],
+    name: "Blusa Aura + Saia Brisa",
+    category: "Essência",
+    image: "/instagram/aura-brisa-marrom.jpg",
+    tag: "Coleção Essência",
+    colors: ["#684a38", "#171717", "#f3eee5", "#702f3a"],
+    reference: "Aura 045 · Brisa 048",
+    sizes: "P · M · G",
   },
   {
     id: 4,
-    name: "Calça Riviera",
-    category: "Alfaiataria",
-    price: 349,
-    image:
-      "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?auto=format&fit=crop&w=900&q=88",
-    colors: ["#b7a58f", "#20201f"],
+    name: "Conjunto Charlotte Xadrez",
+    category: "Essência",
+    image: "/instagram/charlotte-xadrez.jpg",
+    tag: "Ref. 040",
+    colors: ["#1d1d1d", "#8a837b"],
+    reference: "040",
+    sizes: "P · M",
   },
   {
     id: 5,
-    name: "Tricot Siena",
-    category: "Essenciais",
-    price: 289,
-    image:
-      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=88",
-    colors: ["#d6c9b8", "#7f6a59"],
+    name: "Conjunto Renda Cacau",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-renda-cacau.jpg",
+    colors: ["#744526"],
+    sizes: "Consulte tamanhos",
   },
   {
     id: 6,
-    name: "Vestido Íris",
-    category: "Noite",
-    price: 529,
-    image:
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=900&q=88",
+    name: "Conjunto Lilás",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-lilas.jpg",
     tag: "Edição limitada",
-    colors: ["#171716", "#86605a"],
+    colors: ["#d8bee1"],
+    sizes: "Consulte tamanhos",
   },
   {
     id: 7,
-    name: "Colete Milano",
-    category: "Alfaiataria",
-    price: 319,
-    image:
-      "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=88",
-    colors: ["#c8b9a6", "#2b2926"],
-  },
-  {
-    id: 8,
-    name: "Saia Essenza",
-    category: "Essenciais",
-    price: 299,
-    image:
-      "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=900&q=88",
-    colors: ["#8c7663", "#d9d0c3"],
+    name: "Vestido Brasil",
+    category: "Vestidos",
+    image: "/instagram/vestido-brasil.jpg",
+    tag: "Esgotado",
+    colors: ["#e3d229", "#386b45"],
+    sizes: "Edição exclusiva",
+    available: false,
   },
 ];
-
-const currency = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-  minimumFractionDigits: 0,
-});
 
 export default function Home() {
   const [category, setCategory] = useState("Todos");
@@ -116,12 +103,14 @@ export default function Home() {
     .filter((product) => cart[product.id])
     .map((product) => ({ ...product, quantity: cart[product.id] }));
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-  const cartTotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0,
+  const checkoutMessage = encodeURIComponent(
+    `Olá, RK WEAR! Tenho interesse nestas peças:\n${cartItems
+      .map((item) => `• ${item.name} (${item.quantity}x)`)
+      .join("\n")}\n\nPode me informar valores, cores e tamanhos disponíveis?`,
   );
 
   function addToCart(product: Product) {
+    if (product.available === false) return;
     setCart((current) => ({
       ...current,
       [product.id]: (current[product.id] || 0) + 1,
@@ -155,9 +144,9 @@ export default function Home() {
   return (
     <main id="inicio">
       <div className="announcement">
-        <span>Frete grátis em compras acima de R$ 499</span>
+        <span>Peças limitadas e exclusivas</span>
         <span className="announcement-extra">
-          Primeira troca gratuita · 5% no Pix
+          Enviamos para todo o Brasil · Atendimento pelo WhatsApp
         </span>
       </div>
 
@@ -204,69 +193,54 @@ export default function Home() {
             onClick={() => setCartOpen(true)}
             aria-label={`Abrir sacola com ${cartCount} itens`}
           >
-            Sacola <strong>{cartCount}</strong>
+            Seleção <strong>{cartCount}</strong>
           </button>
         </div>
       </header>
 
       <section className="hero" aria-labelledby="hero-title">
-        <div className="hero-shade" />
-        <div className="hero-content">
-          <p className="eyebrow light">Coleção Essenza · Inverno 2026</p>
-          <h1 id="hero-title">
-            Elegância que
-            <br />
-            acompanha você.
-          </h1>
-          <p className="hero-copy">
-            Peças autorais, tecidos que abraçam e uma alfaiataria desenhada para
-            atravessar temporadas.
-          </p>
-          <div className="hero-actions">
-            <a className="button button-light" href="#colecao">
-              Conhecer a coleção
-            </a>
-            <a className="text-link light-link" href="#manifesto">
-              Nossa história <span>↗</span>
-            </a>
-          </div>
-        </div>
-        <div className="hero-index">
-          <span>01</span>
-          <i />
-          <span>04</span>
-        </div>
+        <img
+          className="hero-profile-image"
+          src="/instagram/rk-profile.jpg"
+          alt="RK WEAR"
+        />
+        <h1 id="hero-title" className="sr-only">
+          RK WEAR
+        </h1>
+        <a className="hero-scroll" href="#colecao">
+          Conheça a coleção <span>↓</span>
+        </a>
       </section>
 
       <section className="benefits" aria-label="Benefícios">
         <div>
-          <strong>Envio cuidadoso</strong>
-          <span>Embalado à mão, com rastreio</span>
+          <strong>Alta moda feminina</strong>
+          <span>Para mulheres que decidiram não ser comum</span>
         </div>
         <div>
-          <strong>Compra segura</strong>
-          <span>Proteção em todas as etapas</span>
+          <strong>Peças exclusivas</strong>
+          <span>Seleções limitadas, com identidade</span>
         </div>
         <div>
           <strong>Atendimento humano</strong>
-          <span>Consultoria antes e depois da compra</span>
+          <span>Valores e tamanhos direto no WhatsApp</span>
         </div>
       </section>
 
       <section className="collection section" id="colecao">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Curadoria da estação</p>
-            <h2>Peças para ficar.</h2>
+            <p className="eyebrow">Direto do Instagram</p>
+            <h2>Vista sua melhor versão.</h2>
           </div>
           <p>
-            Uma seleção enxuta de formas precisas, materiais táteis e cores que
-            conversam entre si.
+            Uma seleção das peças publicadas pela RK WEAR. Consulte valores,
+            cores e disponibilidade com nossa equipe.
           </p>
         </div>
 
         <div className="filters" aria-label="Filtrar coleção">
-          {["Todos", "Essenciais", "Alfaiataria", "Noite"].map((item) => (
+          {["Todos", "Essência", "RK Fitness", "Conjuntos", "Vestidos"].map((item) => (
             <button
               key={item}
               className={category === item ? "active" : ""}
@@ -299,18 +273,29 @@ export default function Home() {
                 <button
                   className="quick-add"
                   onClick={() => addToCart(product)}
-                  aria-label={`Adicionar ${product.name} à sacola`}
+                  disabled={product.available === false}
+                  aria-label={
+                    product.available === false
+                      ? `${product.name} esgotado`
+                      : `Adicionar ${product.name} à seleção`
+                  }
                 >
-                  Adicionar à sacola
+                  {product.available === false
+                    ? "Esgotado"
+                    : "Tenho interesse"}
                 </button>
               </div>
               <div className="product-info">
                 <div>
                   <h3>{product.name}</h3>
-                  <span>{product.category}</span>
+                  <span>
+                    {product.category}
+                    {product.reference ? ` · Ref. ${product.reference}` : ""}
+                  </span>
                 </div>
-                <strong>{currency.format(product.price)}</strong>
+                <strong>Consultar</strong>
               </div>
+              {product.sizes && <p className="product-sizes">{product.sizes}</p>}
               <div className="swatches" aria-label="Cores disponíveis">
                 {product.colors.map((color) => (
                   <span key={color} style={{ backgroundColor: color }} />
@@ -324,23 +309,22 @@ export default function Home() {
       <section className="editorial" id="novidades">
         <div className="editorial-image">
           <img
-            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1400&q=90"
-            alt="Mulher usando blazer de alfaiataria em um ensaio de moda"
+            src="/instagram/aura-brisa-marrom.jpg"
+            alt="Blusa Aura e Saia Brisa da coleção Essência"
             loading="lazy"
           />
         </div>
         <div className="editorial-copy">
-          <p className="eyebrow">Alfaiataria sem rigidez</p>
-          <h2>Estrutura por fora. Leveza por dentro.</h2>
+          <p className="eyebrow">Coleção Essência</p>
+          <h2>Para mulheres que decidiram não ser comum.</h2>
           <p>
-            O corte impecável encontra tecidos macios e movimentos naturais.
-            Para entrar em uma reunião, sair para jantar e continuar sendo você
-            em cada cenário.
+            A Blusa Aura e a Saia Brisa traduzem a essência da RK WEAR:
+            presença, feminilidade e personalidade em cada detalhe.
           </p>
           <a className="button button-dark" href="#colecao">
-            Descobrir alfaiataria
+            Ver coleção
           </a>
-          <span className="editorial-number">02 / 04</span>
+          <span className="editorial-number">RK / 2026</span>
         </div>
       </section>
 
@@ -357,35 +341,35 @@ export default function Home() {
         <div className="lookbook-grid">
           <figure className="lookbook-large">
             <img
-              src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=88"
-              alt="Curadoria de roupas em uma loja sofisticada"
+              src="/instagram/charlotte-xadrez.jpg"
+              alt="Conjunto Charlotte Xadrez da RK WEAR"
               loading="lazy"
             />
             <figcaption>
               <span>01</span>
-              <strong>Neutros extraordinários</strong>
+              <strong>Charlotte Xadrez</strong>
             </figcaption>
           </figure>
           <figure>
             <img
-              src="https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=900&q=88"
-              alt="Arara com peças em tons neutros"
+              src="/instagram/conjunto-lilas.jpg"
+              alt="Conjunto lilás da RK WEAR"
               loading="lazy"
             />
             <figcaption>
               <span>02</span>
-              <strong>Texturas da estação</strong>
+              <strong>Delicadeza marcante</strong>
             </figcaption>
           </figure>
           <figure>
             <img
-              src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=900&q=88"
-              alt="Seleção de peças de moda contemporânea"
+              src="/instagram/conjunto-renda-cacau.jpg"
+              alt="Conjunto de renda em tom cacau da RK WEAR"
               loading="lazy"
             />
             <figcaption>
               <span>03</span>
-              <strong>Camadas inteligentes</strong>
+              <strong>Renda Cacau</strong>
             </figcaption>
           </figure>
         </div>
@@ -399,8 +383,8 @@ export default function Home() {
           você escolhe ser todos os dias.”
         </blockquote>
         <p>
-          Design brasileiro em pequenas produções, acabamento próximo e
-          materiais escolhidos para durar.
+          Peças limitadas, escolhas exclusivas e uma curadoria criada para
+          valorizar a sua melhor versão.
         </p>
         <a className="text-link light-link" href="#atendimento">
           Conheça a RK WEAR <span>↗</span>
@@ -410,51 +394,59 @@ export default function Home() {
       <section className="testimonials section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Experiências reais</p>
-            <h2>Quem veste, conta.</h2>
+            <p className="eyebrow">Acontece no Instagram</p>
+            <h2>Entre no universo RK.</h2>
           </div>
           <div className="rating">
-            <strong>4,9</strong>
-            <span>★★★★★</span>
-            <small>Mais de 280 avaliações</small>
+            <strong>27</strong>
+            <span>publicações</span>
+            <small>@rkwear2026</small>
           </div>
         </div>
         <div className="testimonial-grid">
           <article>
-            <span>★★★★★</span>
+            <span>ELAS USAM</span>
             <p>
-              “O blazer veste como se tivesse sido feito para mim. A embalagem,
-              o cuidado e o atendimento transformaram a compra em experiência.”
+              Veja clientes reais usando suas escolhas RK WEAR e encontre novas
+              formas de combinar cada peça.
             </p>
-            <strong>Marina F.</strong>
-            <small>São Paulo, SP · Compra verificada</small>
+            <strong>Looks reais</strong>
+            <small>Destaque do Instagram</small>
           </article>
           <article>
-            <span>★★★★★</span>
+            <span>PROVADOR</span>
             <p>
-              “Peças elegantes sem parecer que estou fantasiada. Uso no trabalho
-              e no fim de semana. É exatamente o tipo de marca que eu procurava.”
+              Acompanhe caimento, detalhes e combinações antes de escolher a sua
+              próxima peça.
             </p>
-            <strong>Camila R.</strong>
-            <small>Belo Horizonte, MG · Compra verificada</small>
+            <strong>Mais segurança para escolher</strong>
+            <small>Destaque do Instagram</small>
           </article>
           <article>
-            <span>★★★★★</span>
+            <span>FEEDBACK</span>
             <p>
-              “Tive dúvida no tamanho e fui atendida por uma pessoa de verdade.
-              Chegou perfeito, antes do prazo, com um perfume maravilhoso.”
+              Confira os retornos compartilhados pela comunidade RK WEAR
+              diretamente no perfil oficial.
             </p>
-            <strong>Luiza A.</strong>
-            <small>Curitiba, PR · Compra verificada</small>
+            <strong>Comunidade RK</strong>
+            <small>@rkwear2026</small>
           </article>
         </div>
+        <a
+          className="button button-dark instagram-cta"
+          href="https://www.instagram.com/rkwear2026/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Seguir no Instagram
+        </a>
       </section>
 
       <section className="service" id="atendimento">
         <div className="service-image">
           <img
-            src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=88"
-            alt="Arara de roupas cuidadosamente selecionadas"
+            src="/instagram/fitness-black.jpg"
+            alt="Conjunto Fitness Black da RK WEAR"
             loading="lazy"
           />
         </div>
@@ -556,8 +548,8 @@ export default function Home() {
           <div>
             <strong>Comprar</strong>
             <a href="#colecao">Novidades</a>
-            <a href="#colecao">Essenciais</a>
-            <a href="#colecao">Alfaiataria</a>
+            <a href="#colecao">Coleção Essência</a>
+            <a href="#colecao">RK Fitness</a>
             <a href="#colecao">Vestidos</a>
           </div>
           <div>
@@ -634,8 +626,8 @@ export default function Home() {
                   <img src={item.image} alt="" />
                   <div>
                     <h3>{item.name}</h3>
-                    <span>Tamanho M · Cor selecionada</span>
-                    <strong>{currency.format(item.price)}</strong>
+                    <span>{item.sizes}</span>
+                    <strong>Valor sob consulta</strong>
                     <div className="quantity">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
@@ -657,20 +649,18 @@ export default function Home() {
             </div>
             <div className="cart-footer">
               <div>
-                <span>Subtotal</span>
-                <strong>{currency.format(cartTotal)}</strong>
+                <span>Sua seleção</span>
+                <strong>{cartCount} {cartCount === 1 ? "peça" : "peças"}</strong>
               </div>
-              <p>Frete calculado na próxima etapa.</p>
-              <button
+              <p>Valores, cores e tamanhos são confirmados no atendimento.</p>
+              <a
                 className="button button-dark"
-                onClick={() =>
-                  setNotice(
-                    "Sua seleção está pronta. Uma consultora pode finalizar o pedido com você.",
-                  )
-                }
+                href={`https://wa.me/5511953836092?text=${checkoutMessage}`}
+                target="_blank"
+                rel="noreferrer"
               >
-                Finalizar compra
-              </button>
+                Consultar no WhatsApp
+              </a>
             </div>
           </>
         )}
