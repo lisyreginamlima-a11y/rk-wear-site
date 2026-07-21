@@ -102,12 +102,13 @@ const products: Product[] = [
     name: "Vestido Brasil",
     category: "Vestidos",
     image: "/instagram/vestido-brasil.jpg",
-    tag: "Edição exclusiva",
+    tag: "Esgotado",
     colors: ["#e3d229", "#386b45"],
-    sizes: "Tamanho a confirmar",
-    sizeOptions: ["A confirmar"],
+    sizes: "Edição exclusiva",
+    sizeOptions: [],
     description:
       "Vestido exclusivo inspirado nas cores do Brasil, produzido em quantidade limitada.",
+    available: false,
   },
 ];
 
