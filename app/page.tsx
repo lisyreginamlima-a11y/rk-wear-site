@@ -23,6 +23,8 @@ type CartLine = {
   color: string;
 };
 
+type PaymentMethod = "pix" | "debit" | "credit";
+
 const products: Product[] = [
   {
     id: 1,
@@ -135,12 +137,15 @@ export default function Home() {
   const [detailQuantity, setDetailQuantity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       setSelectedProduct(null);
       setCartOpen(false);
+      setPaymentOpen(false);
       setMenuOpen(false);
     }
 
@@ -169,6 +174,27 @@ export default function Home() {
       )
       .join("\n")}\n\nPode me informar valores, cores e tamanhos disponíveis?`,
   );
+  const paymentLabels: Record<PaymentMethod, string> = {
+    pix: "Pix",
+    debit: "cartão de débito",
+    credit: "cartão de crédito",
+  };
+  const paymentMessage = encodeURIComponent(
+    `Olá, RK WEAR! Quero finalizar meu pedido com ${paymentLabels[paymentMethod]}:\n${cartItems
+      .map(
+        (item) =>
+          `• ${item.name} — tamanho ${item.size}, cor ${item.color} (${item.quantity}x)`,
+      )
+      .join(
+        "\n",
+      )}\n\nPor favor, confirme o valor e envie o link oficial e seguro para pagamento. Não enviarei dados do cartão pelo WhatsApp.`,
+  );
+
+  function openPayment() {
+    if (cartItems.length === 0) return;
+    setCartOpen(false);
+    setPaymentOpen(true);
+  }
 
   function openProduct(product: Product) {
     setSelectedProduct(product);
@@ -924,18 +950,127 @@ export default function Home() {
                 <strong>{cartCount} {cartCount === 1 ? "peça" : "peças"}</strong>
               </div>
               <p>Valores, cores e tamanhos são confirmados no atendimento.</p>
-              <a
+              <button
                 className="button button-dark"
+                type="button"
+                onClick={openPayment}
+              >
+                Finalizar compra
+              </button>
+              <a
+                className="cart-whatsapp-link"
                 href={`https://wa.me/5511953836092?text=${checkoutMessage}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                Consultar no WhatsApp
+                Tirar dúvida pelo WhatsApp
               </a>
             </div>
           </>
         )}
       </aside>
+
+      {paymentOpen && (
+        <div
+          className="payment-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setPaymentOpen(false);
+          }}
+        >
+          <section
+            className="payment-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="payment-title"
+          >
+            <button
+              className="payment-close"
+              type="button"
+              onClick={() => setPaymentOpen(false)}
+              aria-label="Fechar formas de pagamento"
+            >
+              ×
+            </button>
+
+            <div className="payment-heading">
+              <span className="payment-lock" aria-hidden="true">✓</span>
+              <p className="eyebrow">Pagamento protegido</p>
+              <h2 id="payment-title">Como você prefere pagar?</h2>
+              <p>
+                Escolha uma opção. A RK WEAR não pede, recebe ou armazena
+                números de cartão.
+              </p>
+            </div>
+
+            <div className="payment-options" role="radiogroup" aria-label="Forma de pagamento">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={paymentMethod === "pix"}
+                className={paymentMethod === "pix" ? "active" : ""}
+                onClick={() => setPaymentMethod("pix")}
+              >
+                <span className="payment-option-icon">PIX</span>
+                <span><strong>Pix</strong><small>Pagamento rápido</small></span>
+                <i aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={paymentMethod === "debit"}
+                className={paymentMethod === "debit" ? "active" : ""}
+                onClick={() => setPaymentMethod("debit")}
+              >
+                <span className="payment-option-icon">▣</span>
+                <span><strong>Cartão de débito</strong><small>Pagamento à vista</small></span>
+                <i aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={paymentMethod === "credit"}
+                className={paymentMethod === "credit" ? "active" : ""}
+                onClick={() => setPaymentMethod("credit")}
+              >
+                <span className="payment-option-icon">▰</span>
+                <span><strong>Cartão de crédito</strong><small>À vista ou parcelado</small></span>
+                <i aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="payment-security-note">
+              <strong>Seus dados bancários ficam protegidos</strong>
+              <p>
+                Nunca envie número, validade ou código de segurança do cartão
+                por mensagem. Você só deverá digitá-los na página oficial da
+                instituição de pagamento.
+              </p>
+            </div>
+
+            <a
+              className="button button-dark payment-continue"
+              href={`https://wa.me/5511953836092?text=${paymentMessage}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Solicitar link seguro
+            </a>
+            <button
+              className="payment-back-button"
+              type="button"
+              onClick={() => {
+                setPaymentOpen(false);
+                setCartOpen(true);
+              }}
+            >
+              Voltar para a sacola
+            </button>
+            <p className="payment-provider-note">
+              O pagamento somente será concluído no ambiente oficial da instituição escolhida.
+            </p>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
