@@ -42,7 +42,7 @@ const products: Product[] = [
     id: 2,
     name: "Calça Courino Zara",
     category: "Essência",
-    image: "/instagram/calca-courino-zara.jpg",
+    image: "/instagram/calca-courino-zara-white.png",
     tag: "Ref. 0576",
     colors: [{ name: "Preto", hex: "#111111" }],
     reference: "0576",
@@ -112,7 +112,7 @@ const products: Product[] = [
     id: 7,
     name: "Vestido Brasil",
     category: "Vestidos",
-    image: "/instagram/vestido-brasil.jpg",
+    image: "/instagram/vestido-brasil-white.png",
     tag: "Esgotado",
     colors: [
       { name: "Amarelo", hex: "#e3d229" },
@@ -456,12 +456,9 @@ export default function Home() {
       </section>
 
       <section className="editorial" id="novidades">
-        <div className="editorial-image">
-          <img
-            src="/instagram/aura-brisa-marrom.jpg"
-            alt="Blusa Aura e Saia Brisa da coleção Essência"
-            loading="lazy"
-          />
+        <div className="editorial-image editorial-brand" aria-hidden="true">
+          <span>RK</span>
+          <small>ESSÊNCIA · 2026</small>
         </div>
         <div className="editorial-copy">
           <p className="eyebrow">Coleção Essência</p>
@@ -477,50 +474,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="lookbook section">
+      <section className="style-notes section">
         <div className="section-heading compact">
           <div>
-            <p className="eyebrow">Lookbook</p>
+            <p className="eyebrow">Guia de estilo</p>
             <h2>Vista o seu ritmo.</h2>
           </div>
           <a className="text-link" href="#colecao">
             Ver coleção completa <span>↗</span>
           </a>
         </div>
-        <div className="lookbook-grid">
-          <figure className="lookbook-large">
-            <img
-              src="/instagram/charlotte-xadrez.jpg"
-              alt="Conjunto Charlotte Xadrez da RK WEAR"
-              loading="lazy"
-            />
-            <figcaption>
-              <span>01</span>
-              <strong>Charlotte Xadrez</strong>
-            </figcaption>
-          </figure>
-          <figure>
-            <img
-              src="/instagram/conjunto-lilas.jpg"
-              alt="Conjunto lilás da RK WEAR"
-              loading="lazy"
-            />
-            <figcaption>
-              <span>02</span>
-              <strong>Delicadeza marcante</strong>
-            </figcaption>
-          </figure>
-          <figure>
-            <img
-              src="/instagram/conjunto-renda-cacau.jpg"
-              alt="Conjunto de renda em tom cacau da RK WEAR"
-              loading="lazy"
-            />
-            <figcaption>
-              <span>03</span>
-              <strong>Renda Cacau</strong>
-            </figcaption>
-          </figure>
+        <div className="style-notes-grid">
+          <article>
+            <span>01</span>
+            <h3>Presença sem excesso.</h3>
+            <p>Modelagens que valorizam o look e deixam sua personalidade falar.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Texturas que marcam.</h3>
+            <p>Renda, xadrez e tecidos estruturados para criar combinações únicas.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Do casual ao especial.</h3>
+            <p>Peças versáteis para acompanhar diferentes momentos do seu dia.</p>
+          </article>
         </div>
       </section>
 
@@ -540,64 +519,54 @@ export default function Home() {
         </a>
       </section>
 
-      <section className="testimonials section">
+      <section className="highlights section" id="destaques">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Acontece no Instagram</p>
-            <h2>Entre no universo RK.</h2>
+            <p className="eyebrow">Destaque selecionado</p>
+            <h2>Do Instagram para a loja.</h2>
           </div>
           <div className="rating">
-            <strong>27</strong>
-            <span>publicações</span>
-            <small>@rkwear2026</small>
+            <strong>01</strong>
+            <span>foto aprovada</span>
+            <small>sem repetição</small>
           </div>
         </div>
-        <div className="testimonial-grid">
-          <article>
-            <span>ELAS USAM</span>
+
+        <div className="highlight-feature">
+          <figure>
+            <img
+              src="/instagram/highlights/rk-fitness-white.png"
+              alt="Look RK Fitness em fundo branco"
+              loading="lazy"
+            />
+            <figcaption>
+              <span>RK FITNESS</span>
+              <strong>Movimento com presença.</strong>
+            </figcaption>
+          </figure>
+          <div className="highlight-copy">
+            <p className="eyebrow">Escolha RK</p>
+            <h3>Uma foto, um look, nenhum detalhe repetido.</h3>
             <p>
-              Veja clientes reais usando suas escolhas RK WEAR e encontre novas
-              formas de combinar cada peça.
+              Conteúdo selecionado do perfil oficial, tratado com fundo branco
+              para manter a loja leve, elegante e focada na peça.
             </p>
-            <strong>Looks reais</strong>
-            <small>Destaque do Instagram</small>
-          </article>
-          <article>
-            <span>PROVADOR</span>
-            <p>
-              Acompanhe caimento, detalhes e combinações antes de escolher a sua
-              próxima peça.
-            </p>
-            <strong>Mais segurança para escolher</strong>
-            <small>Destaque do Instagram</small>
-          </article>
-          <article>
-            <span>FEEDBACK</span>
-            <p>
-              Confira os retornos compartilhados pela comunidade RK WEAR
-              diretamente no perfil oficial.
-            </p>
-            <strong>Comunidade RK</strong>
-            <small>@rkwear2026</small>
-          </article>
+            <a
+              className="button button-dark"
+              href="https://www.instagram.com/stories/highlights/18062592422492792/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Ver destaque no Instagram
+            </a>
+          </div>
         </div>
-        <a
-          className="button button-dark instagram-cta"
-          href="https://www.instagram.com/rkwear2026/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Seguir no Instagram
-        </a>
       </section>
 
       <section className="service" id="atendimento">
-        <div className="service-image">
-          <img
-            src="/instagram/fitness-black.jpg"
-            alt="Conjunto Fitness Black da RK WEAR"
-            loading="lazy"
-          />
+        <div className="service-image service-brand" aria-hidden="true">
+          <span>RK</span>
+          <p>Atendimento com cuidado em cada escolha.</p>
         </div>
         <div className="service-copy">
           <p className="eyebrow">Atendimento particular</p>
