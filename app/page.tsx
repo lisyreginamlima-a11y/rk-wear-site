@@ -102,13 +102,12 @@ const products: Product[] = [
     name: "Vestido Brasil",
     category: "Vestidos",
     image: "/instagram/vestido-brasil.jpg",
-    tag: "Esgotado",
+    tag: "Edição exclusiva",
     colors: ["#e3d229", "#386b45"],
-    sizes: "Edição exclusiva",
-    sizeOptions: [],
+    sizes: "Tamanho a confirmar",
+    sizeOptions: ["A confirmar"],
     description:
       "Vestido exclusivo inspirado nas cores do Brasil, produzido em quantidade limitada.",
-    available: false,
   },
 ];
 
@@ -261,11 +260,16 @@ export default function Home() {
             Buscar
           </a>
           <button
-            className="text-action"
+            className="text-action cart-action"
             onClick={() => setCartOpen(true)}
             aria-label={`Abrir sacola com ${cartCount} itens`}
           >
-            Seleção <strong>{cartCount}</strong>
+            <span className="cart-glyph" aria-hidden="true">
+              <i />
+              <i />
+            </span>
+            <span className="cart-label">Sacola</span>
+            <strong>{cartCount}</strong>
           </button>
         </div>
       </header>
