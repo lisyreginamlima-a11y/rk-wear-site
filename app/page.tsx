@@ -8,7 +8,7 @@ type Product = {
   category: string;
   image: string;
   tag?: string;
-  colors: string[];
+  colors: { name: string; hex: string }[];
   reference?: string;
   sizes?: string;
   sizeOptions: string[];
@@ -20,6 +20,7 @@ type CartLine = {
   productId: number;
   quantity: number;
   size: string;
+  color: string;
 };
 
 const products: Product[] = [
@@ -29,7 +30,7 @@ const products: Product[] = [
     category: "RK Fitness",
     image: "/instagram/fitness-black.jpg",
     tag: "Lançamento",
-    colors: ["#151515"],
+    colors: [{ name: "Preto", hex: "#151515" }],
     sizes: "Consulte tamanhos",
     sizeOptions: ["P", "M", "G", "A confirmar"],
     description:
@@ -41,7 +42,7 @@ const products: Product[] = [
     category: "Essência",
     image: "/instagram/calca-courino-zara.jpg",
     tag: "Ref. 0576",
-    colors: ["#111111"],
+    colors: [{ name: "Preto", hex: "#111111" }],
     reference: "0576",
     sizes: "P · M · G",
     sizeOptions: ["P", "M", "G"],
@@ -54,7 +55,12 @@ const products: Product[] = [
     category: "Essência",
     image: "/instagram/aura-brisa-marrom.jpg",
     tag: "Coleção Essência",
-    colors: ["#684a38", "#171717", "#f3eee5", "#702f3a"],
+    colors: [
+      { name: "Marrom", hex: "#684a38" },
+      { name: "Preto", hex: "#171717" },
+      { name: "Off-white", hex: "#f3eee5" },
+      { name: "Vinho", hex: "#702f3a" },
+    ],
     reference: "Aura 045 · Brisa 048",
     sizes: "P · M · G",
     sizeOptions: ["P", "M", "G"],
@@ -67,7 +73,10 @@ const products: Product[] = [
     category: "Essência",
     image: "/instagram/charlotte-xadrez.jpg",
     tag: "Ref. 040",
-    colors: ["#1d1d1d", "#8a837b"],
+    colors: [
+      { name: "Preto", hex: "#1d1d1d" },
+      { name: "Cinza", hex: "#8a837b" },
+    ],
     reference: "040",
     sizes: "P · M",
     sizeOptions: ["P", "M"],
@@ -79,7 +88,7 @@ const products: Product[] = [
     name: "Conjunto Renda Cacau",
     category: "Conjuntos",
     image: "/instagram/conjunto-renda-cacau.jpg",
-    colors: ["#744526"],
+    colors: [{ name: "Cacau", hex: "#744526" }],
     sizes: "Consulte tamanhos",
     sizeOptions: ["P", "M", "G", "A confirmar"],
     description:
@@ -91,7 +100,7 @@ const products: Product[] = [
     category: "Conjuntos",
     image: "/instagram/conjunto-lilas.jpg",
     tag: "Edição limitada",
-    colors: ["#d8bee1"],
+    colors: [{ name: "Lilás", hex: "#d8bee1" }],
     sizes: "Consulte tamanhos",
     sizeOptions: ["P", "M", "G", "A confirmar"],
     description:
@@ -103,7 +112,10 @@ const products: Product[] = [
     category: "Vestidos",
     image: "/instagram/vestido-brasil.jpg",
     tag: "Esgotado",
-    colors: ["#e3d229", "#386b45"],
+    colors: [
+      { name: "Amarelo", hex: "#e3d229" },
+      { name: "Verde", hex: "#386b45" },
+    ],
     sizes: "Edição exclusiva",
     sizeOptions: [],
     description:
@@ -119,6 +131,7 @@ export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const [detailQuantity, setDetailQuantity] = useState(1);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
@@ -152,7 +165,7 @@ export default function Home() {
     `Olá, RK WEAR! Tenho interesse nestas peças:\n${cartItems
       .map(
         (item) =>
-          `• ${item.name} — tamanho ${item.size} (${item.quantity}x)`,
+          `• ${item.name} — tamanho ${item.size}, cor ${item.color} (${item.quantity}x)`,
       )
       .join("\n")}\n\nPode me informar valores, cores e tamanhos disponíveis?`,
   );
@@ -160,25 +173,43 @@ export default function Home() {
   function openProduct(product: Product) {
     setSelectedProduct(product);
     setSelectedSize(product.sizeOptions[0] || "");
+    setSelectedColor(product.colors[0]?.name || "A confirmar");
     setDetailQuantity(1);
   }
 
-  function addToCart(product: Product, size: string, quantity = 1) {
+  function addToCart(
+    product: Product,
+    size: string,
+    color: string,
+    quantity = 1,
+  ) {
     if (product.available === false) return;
+    const normalizedSize = size || "A confirmar";
+    const normalizedColor = color || "A confirmar";
     setCart((current) => {
       const existing = current.find(
-        (line) => line.productId === product.id && line.size === size,
+        (line) =>
+          line.productId === product.id &&
+          line.size === normalizedSize &&
+          line.color === normalizedColor,
       );
 
       if (!existing) {
         return [
           ...current,
-          { productId: product.id, quantity, size: size || "A confirmar" },
+          {
+            productId: product.id,
+            quantity,
+            size: normalizedSize,
+            color: normalizedColor,
+          },
         ];
       }
 
       return current.map((line) =>
-        line.productId === product.id && line.size === size
+        line.productId === product.id &&
+        line.size === normalizedSize &&
+        line.color === normalizedColor
           ? { ...line, quantity: line.quantity + quantity }
           : line,
       );
@@ -187,11 +218,18 @@ export default function Home() {
     setCartOpen(true);
   }
 
-  function updateQuantity(productId: number, size: string, change: number) {
+  function updateQuantity(
+    productId: number,
+    size: string,
+    color: string,
+    change: number,
+  ) {
     setCart((current) =>
       current
         .map((line) =>
-          line.productId === productId && line.size === size
+          line.productId === productId &&
+          line.size === size &&
+          line.color === color
             ? { ...line, quantity: Math.max(0, line.quantity + change) }
             : line,
         )
@@ -379,7 +417,11 @@ export default function Home() {
               {product.sizes && <p className="product-sizes">{product.sizes}</p>}
               <div className="swatches" aria-label="Cores disponíveis">
                 {product.colors.map((color) => (
-                  <span key={color} style={{ backgroundColor: color }} />
+                  <span
+                    key={color.name}
+                    title={color.name}
+                    style={{ backgroundColor: color.hex }}
+                  />
                 ))}
               </div>
             </article>
@@ -708,10 +750,20 @@ export default function Home() {
               <p className="product-description">{selectedProduct.description}</p>
 
               <div className="product-modal-colors">
-                <span>Cores</span>
-                <div className="swatches" aria-label="Cores da peça">
+                <span>Escolha a cor</span>
+                <div className="color-picker" aria-label="Escolha a cor da peça">
                   {selectedProduct.colors.map((color) => (
-                    <span key={color} style={{ backgroundColor: color }} />
+                    <button
+                      type="button"
+                      key={color.name}
+                      className={selectedColor === color.name ? "active" : ""}
+                      onClick={() => setSelectedColor(color.name)}
+                      aria-pressed={selectedColor === color.name}
+                      aria-label={`Cor ${color.name}`}
+                    >
+                      <span style={{ backgroundColor: color.hex }} />
+                      {color.name}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -773,6 +825,7 @@ export default function Home() {
                       addToCart(
                         selectedProduct,
                         selectedSize,
+                        selectedColor,
                         detailQuantity,
                       )
                     }
@@ -834,22 +887,28 @@ export default function Home() {
           <>
             <div className="cart-items">
               {cartItems.map((item) => (
-                <article key={`${item.id}-${item.size}`}>
+                <article key={`${item.id}-${item.size}-${item.color}`}>
                   <img src={item.image} alt="" />
                   <div>
                     <h3>{item.name}</h3>
-                    <span>Tamanho: {item.size}</span>
+                    <span>
+                      Tamanho: {item.size} · Cor: {item.color}
+                    </span>
                     <strong>Valor sob consulta</strong>
                     <div className="quantity">
                       <button
-                        onClick={() => updateQuantity(item.id, item.size, -1)}
+                        onClick={() =>
+                          updateQuantity(item.id, item.size, item.color, -1)
+                        }
                         aria-label={`Diminuir quantidade de ${item.name}`}
                       >
                         −
                       </button>
                       <span>{item.quantity}</span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.size, 1)}
+                        onClick={() =>
+                          updateQuantity(item.id, item.size, item.color, 1)
+                        }
                         aria-label={`Aumentar quantidade de ${item.name}`}
                       >
                         +
