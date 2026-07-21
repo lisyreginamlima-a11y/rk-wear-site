@@ -124,6 +124,44 @@ const products: Product[] = [
       "Vestido exclusivo inspirado nas cores do Brasil, produzido em quantidade limitada.",
     available: false,
   },
+  {
+    id: 8,
+    name: "Conjunto Azul Capítulo I",
+    category: "Capítulo I",
+    image: "/instagram/conjunto-azul-capitulo-1.jpg",
+    tag: "Novidade",
+    colors: [{ name: "Azul-claro", hex: "#b8d9ef" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto azul-claro com top estruturado e saia de cintura alta, em uma proposta leve e feminina.",
+  },
+  {
+    id: 9,
+    name: "Conjunto Pink Capítulo I",
+    category: "Capítulo I",
+    image: "/instagram/conjunto-pink-capitulo-1.jpg",
+    tag: "Esgotado",
+    colors: [{ name: "Pink", hex: "#ed4aae" }],
+    sizes: "Edição esgotada",
+    sizeOptions: [],
+    description:
+      "Conjunto pink com top cropped e short de alfaiataria, apresentado na coleção Capítulo I.",
+    available: false,
+  },
+  {
+    id: 10,
+    name: "Conjunto Amarelo Capítulo I",
+    category: "Capítulo I",
+    image: "/instagram/conjunto-amarelo-capitulo-1.jpg",
+    tag: "Esgotado",
+    colors: [{ name: "Amarelo-claro", hex: "#f4e7a8" }],
+    sizes: "Edição esgotada",
+    sizeOptions: [],
+    description:
+      "Conjunto amarelo-claro com camisa fluida e short leve, apresentado na coleção Capítulo I.",
+    available: false,
+  },
 ];
 
 export default function Home() {
@@ -519,48 +557,55 @@ export default function Home() {
         </a>
       </section>
 
-      <section className="highlights section" id="destaques">
+      <section className="testimonials section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Destaque selecionado</p>
-            <h2>Do Instagram para a loja.</h2>
+            <p className="eyebrow">Acontece no Instagram</p>
+            <h2>Entre no universo RK.</h2>
           </div>
           <div className="rating">
-            <strong>01</strong>
-            <span>foto aprovada</span>
-            <small>sem repetição</small>
+            <strong>27</strong>
+            <span>publicações</span>
+            <small>@rkwear2026</small>
           </div>
         </div>
-
-        <div className="highlight-feature">
-          <figure>
-            <img
-              src="/instagram/highlights/rk-fitness-white.png"
-              alt="Look RK Fitness em fundo branco"
-              loading="lazy"
-            />
-            <figcaption>
-              <span>RK FITNESS</span>
-              <strong>Movimento com presença.</strong>
-            </figcaption>
-          </figure>
-          <div className="highlight-copy">
-            <p className="eyebrow">Escolha RK</p>
-            <h3>Uma foto, um look, nenhum detalhe repetido.</h3>
+        <div className="testimonial-grid">
+          <article>
+            <span>NOVIDADES</span>
             <p>
-              Conteúdo selecionado do perfil oficial, tratado com fundo branco
-              para manter a loja leve, elegante e focada na peça.
+              Acompanhe os lançamentos e descubra as novas peças selecionadas
+              para a coleção RK WEAR.
             </p>
-            <a
-              className="button button-dark"
-              href="https://www.instagram.com/stories/highlights/18062592422492792/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Ver destaque no Instagram
-            </a>
-          </div>
+            <strong>Novas escolhas RK</strong>
+            <small>Perfil oficial</small>
+          </article>
+          <article>
+            <span>PROVADOR</span>
+            <p>
+              Acompanhe caimento, detalhes e combinações antes de escolher a sua
+              próxima peça.
+            </p>
+            <strong>Mais segurança para escolher</strong>
+            <small>Destaque do Instagram</small>
+          </article>
+          <article>
+            <span>FEEDBACK</span>
+            <p>
+              Confira os retornos compartilhados pela comunidade RK WEAR
+              diretamente no perfil oficial.
+            </p>
+            <strong>Comunidade RK</strong>
+            <small>@rkwear2026</small>
+          </article>
         </div>
+        <a
+          className="button button-dark instagram-cta"
+          href="https://www.instagram.com/rkwear2026/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Seguir no Instagram
+        </a>
       </section>
 
       <section className="service" id="atendimento">

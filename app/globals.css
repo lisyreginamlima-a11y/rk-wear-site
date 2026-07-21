@@ -836,72 +836,8 @@ button.button {
   line-height: 1.8;
 }
 
-.highlights {
+.testimonials {
   background: #eee9e0;
-}
-
-.highlight-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
-  border: 1px solid var(--line);
-  background: #f8f6f1;
-}
-
-.highlight-feature figure {
-  margin: 0;
-  padding: 28px 28px 22px;
-  background: #fff;
-}
-
-.highlight-feature figure img {
-  width: 100%;
-  height: 690px;
-  object-fit: contain;
-  background: #fff;
-}
-
-.highlight-feature figcaption {
-  padding-top: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.highlight-feature figcaption span {
-  color: var(--gold);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-}
-
-.highlight-feature figcaption strong {
-  font-family: var(--display);
-  font-size: 19px;
-  font-weight: 500;
-}
-
-.highlight-copy {
-  padding: clamp(46px, 7vw, 110px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.highlight-copy h3 {
-  max-width: 560px;
-  margin: 20px 0 24px;
-  font-family: var(--display);
-  font-size: clamp(38px, 4.4vw, 66px);
-  font-weight: 500;
-  line-height: 1.05;
-}
-
-.highlight-copy > p:not(.eyebrow) {
-  max-width: 480px;
-  margin-bottom: 36px;
-  color: #686159;
-  line-height: 1.8;
 }
 
 .rating {
@@ -1981,18 +1917,6 @@ footer {
     padding: 35px 25px;
   }
 
-  .highlight-feature {
-    grid-template-columns: 1fr 0.82fr;
-  }
-
-  .highlight-feature figure img {
-    height: 600px;
-  }
-
-  .highlight-copy {
-    padding: 48px 36px;
-  }
-
   .style-notes-grid article {
     padding: 38px 28px;
   }
@@ -2309,28 +2233,6 @@ footer {
     min-height: 300px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
-  }
-
-  .highlight-feature {
-    grid-template-columns: 1fr;
-  }
-
-  .highlight-feature figure {
-    padding: 18px 18px 16px;
-  }
-
-  .highlight-feature figure img {
-    height: 510px;
-  }
-
-  .highlight-feature figcaption {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .highlight-copy {
-    padding: 58px 24px;
   }
 
   .style-notes-grid {
