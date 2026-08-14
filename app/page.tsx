@@ -25,6 +25,19 @@ type CartLine = {
 
 type PaymentMethod = "pix" | "debit" | "credit";
 
+type OutfitOption = {
+  productId: number;
+  label: string;
+  style: string;
+  colors: { name: string; hex: string }[];
+};
+
+type SizeRecommendation = {
+  top: string;
+  bottom: string;
+  length: string;
+};
+
 const products: Product[] = [
   {
     id: 1,
@@ -300,6 +313,90 @@ const products: Product[] = [
   },
 ];
 
+const topOptions: OutfitOption[] = [
+  {
+    productId: 13,
+    label: "Manga fluida",
+    style: "flowy",
+    colors: [
+      { name: "Azul-marinho", hex: "#17264d" },
+      { name: "Telha", hex: "#bd5d2b" },
+      { name: "Off-white", hex: "#f4f0e8" },
+      { name: "Preto", hex: "#171717" },
+    ],
+  },
+  {
+    productId: 15,
+    label: "Drapeada",
+    style: "draped",
+    colors: [
+      { name: "Cacau", hex: "#70402e" },
+      { name: "Vinho", hex: "#722738" },
+      { name: "Off-white", hex: "#f4f0e9" },
+      { name: "Preto", hex: "#151515" },
+    ],
+  },
+  {
+    productId: 20,
+    label: "Renda branca",
+    style: "lace",
+    colors: [{ name: "Branco", hex: "#f7f7f4" }],
+  },
+  {
+    productId: 12,
+    label: "Assimétrica",
+    style: "asymmetric",
+    colors: [{ name: "Preto", hex: "#111111" }],
+  },
+  {
+    productId: 16,
+    label: "Cropped",
+    style: "cropped",
+    colors: [{ name: "Verde-oliva", hex: "#59614f" }],
+  },
+];
+
+const bottomOptions: OutfitOption[] = [
+  {
+    productId: 2,
+    label: "Calça courino",
+    style: "courino",
+    colors: [{ name: "Preto", hex: "#111111" }],
+  },
+  {
+    productId: 3,
+    label: "Saia Brisa",
+    style: "skirt",
+    colors: [
+      { name: "Marrom", hex: "#684a38" },
+      { name: "Preto", hex: "#171717" },
+      { name: "Off-white", hex: "#f3eee5" },
+      { name: "Vinho", hex: "#702f3a" },
+    ],
+  },
+  {
+    productId: 4,
+    label: "Pantalona xadrez",
+    style: "wide",
+    colors: [
+      { name: "Preto", hex: "#1d1d1d" },
+      { name: "Cinza", hex: "#8a837b" },
+    ],
+  },
+  {
+    productId: 18,
+    label: "Short cacau",
+    style: "shorts",
+    colors: [{ name: "Cacau", hex: "#8b4f33" }],
+  },
+  {
+    productId: 16,
+    label: "Calça verde",
+    style: "tailored",
+    colors: [{ name: "Verde-oliva", hex: "#59614f" }],
+  },
+];
+
 export default function Home() {
   const [category, setCategory] = useState("Todos");
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -313,6 +410,20 @@ export default function Home() {
   const [notice, setNotice] = useState("");
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
+  const [topIndex, setTopIndex] = useState(0);
+  const [bottomIndex, setBottomIndex] = useState(0);
+  const [topColorIndex, setTopColorIndex] = useState(0);
+  const [bottomColorIndex, setBottomColorIndex] = useState(0);
+  const [mannequinRotation, setMannequinRotation] = useState(0);
+  const [dragX, setDragX] = useState<number | null>(null);
+  const [measurements, setMeasurements] = useState({
+    bust: "",
+    waist: "",
+    hips: "",
+    height: "",
+  });
+  const [sizeRecommendation, setSizeRecommendation] =
+    useState<SizeRecommendation | null>(null);
 
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
@@ -451,6 +562,66 @@ export default function Home() {
     event.currentTarget.reset();
   }
 
+  function rotateMannequin(change: number) {
+    setMannequinRotation((current) => (current + change + 360) % 360);
+  }
+
+  function calculateRecommendedSize(value: number, measurement: "bust" | "waist" | "hips") {
+    const limits = {
+      bust: [82, 88, 94, 102],
+      waist: [64, 70, 76, 84],
+      hips: [90, 96, 102, 110],
+    }[measurement];
+    const sizes = ["PP", "P", "M", "G", "GG"];
+    const index = limits.findIndex((limit) => value <= limit);
+    return index === -1 ? 4 : index;
+  }
+
+  function submitMeasurements(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const bust = Number(measurements.bust);
+    const waist = Number(measurements.waist);
+    const hips = Number(measurements.hips);
+    const height = Number(measurements.height);
+    if (![bust, waist, hips, height].every((value) => value > 0)) return;
+
+    const sizes = ["PP", "P", "M", "G", "GG"];
+    const topSize = Math.max(
+      calculateRecommendedSize(bust, "bust"),
+      calculateRecommendedSize(waist, "waist"),
+    );
+    const bottomSize = Math.max(
+      calculateRecommendedSize(waist, "waist"),
+      calculateRecommendedSize(hips, "hips"),
+    );
+    const length =
+      height < 158
+        ? "Comprimento curto — algumas calças podem precisar de ajuste."
+        : height > 172
+          ? "Comprimento alongado — confirme o comprimento das calças."
+          : "Comprimento padrão tende a vestir melhor.";
+
+    setSizeRecommendation({
+      top: sizes[topSize],
+      bottom: sizes[bottomSize],
+      length,
+    });
+  }
+
+  const selectedTop = topOptions[topIndex];
+  const selectedBottom = bottomOptions[bottomIndex];
+  const selectedTopProduct = products.find(
+    (product) => product.id === selectedTop.productId,
+  );
+  const selectedBottomProduct = products.find(
+    (product) => product.id === selectedBottom.productId,
+  );
+  const fittingMessage = sizeRecommendation
+    ? encodeURIComponent(
+        `Olá, RK WEAR! Usei o provador do site. Minhas medidas são: busto ${measurements.bust} cm, cintura ${measurements.waist} cm, quadril ${measurements.hips} cm e altura ${measurements.height} cm. A estimativa foi ${sizeRecommendation.top} para parte de cima e ${sizeRecommendation.bottom} para parte de baixo. Pode confirmar o tamanho das peças?`,
+      )
+    : "";
+
   return (
     <main id="inicio">
       <div className="announcement">
@@ -478,6 +649,9 @@ export default function Home() {
           </a>
           <a href="#colecao" onClick={() => setMenuOpen(false)}>
             Coleção
+          </a>
+          <a href="#provador" onClick={() => setMenuOpen(false)}>
+            Provador
           </a>
           <a href="#manifesto" onClick={() => setMenuOpen(false)}>
             A marca
@@ -635,6 +809,265 @@ export default function Home() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="virtual-fitting section" id="provador">
+        <div className="section-heading fitting-heading">
+          <div>
+            <p className="eyebrow">Provador virtual RK</p>
+            <h2>Monte o look. Gire. Experimente.</h2>
+          </div>
+          <p>
+            Combine blusas e partes de baixo do catálogo em um manequim 360°.
+            Arraste o manequim ou use as setas para observar o look.
+          </p>
+        </div>
+
+        <div className="fitting-studio">
+          <div className="mannequin-panel">
+            <div
+              className={`mannequin-stage ${dragX !== null ? "is-dragging" : ""}`}
+              onPointerDown={(event) => {
+                setDragX(event.clientX);
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }}
+              onPointerMove={(event) => {
+                if (dragX === null) return;
+                const movement = event.clientX - dragX;
+                setMannequinRotation(
+                  (current) => (current + movement * 0.75 + 360) % 360,
+                );
+                setDragX(event.clientX);
+              }}
+              onPointerUp={() => setDragX(null)}
+              onPointerCancel={() => setDragX(null)}
+              aria-label="Manequim virtual giratório"
+            >
+              <span className="rotation-badge">
+                360° · {Math.round(mannequinRotation)}°
+              </span>
+              <span className="drag-hint">Arraste para girar</span>
+              <div className="mannequin-shadow" />
+              <div
+                className="mannequin"
+                style={
+                  {
+                    transform: `rotateY(${mannequinRotation}deg)`,
+                    "--top-color": selectedTop.colors[topColorIndex].hex,
+                    "--bottom-color": selectedBottom.colors[bottomColorIndex].hex,
+                  } as React.CSSProperties
+                }
+              >
+                <div className="mannequin-head"><span /></div>
+                <div className="mannequin-neck" />
+                <div className="mannequin-torso" />
+                <div className="mannequin-arm arm-left" />
+                <div className="mannequin-arm arm-right" />
+                <div className="mannequin-leg leg-left" />
+                <div className="mannequin-leg leg-right" />
+                <div className={`mannequin-top top-${selectedTop.style}`}>
+                  <i className="top-sleeve sleeve-left" />
+                  <i className="top-sleeve sleeve-right" />
+                </div>
+                <div className={`mannequin-bottom bottom-${selectedBottom.style}`}>
+                  <i className="bottom-leg bottom-left" />
+                  <i className="bottom-leg bottom-right" />
+                </div>
+              </div>
+            </div>
+
+            <div className="rotation-controls" aria-label="Controles de rotação">
+              <button onClick={() => rotateMannequin(-45)} aria-label="Girar para a esquerda">
+                ←
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="359"
+                value={Math.round(mannequinRotation)}
+                onChange={(event) => setMannequinRotation(Number(event.target.value))}
+                aria-label="Ângulo do manequim"
+              />
+              <button onClick={() => rotateMannequin(45)} aria-label="Girar para a direita">
+                →
+              </button>
+            </div>
+            <div className="selected-look">
+              <span>Seu look</span>
+              <strong>{selectedTop.label} + {selectedBottom.label}</strong>
+            </div>
+          </div>
+
+          <div className="outfit-controls">
+            <div className="outfit-group">
+              <div className="outfit-group-title">
+                <span>01</span>
+                <div>
+                  <p>Escolha a parte de cima</p>
+                  <strong>{selectedTop.label}</strong>
+                </div>
+              </div>
+              <div className="outfit-options">
+                {topOptions.map((option, index) => (
+                  <button
+                    key={option.label}
+                    className={topIndex === index ? "active" : ""}
+                    onClick={() => {
+                      setTopIndex(index);
+                      setTopColorIndex(0);
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <div className="fitting-swatches" aria-label="Cor da parte de cima">
+                {selectedTop.colors.map((color, index) => (
+                  <button
+                    key={color.name}
+                    className={topColorIndex === index ? "active" : ""}
+                    style={{ backgroundColor: color.hex }}
+                    onClick={() => setTopColorIndex(index)}
+                    aria-label={`Parte de cima na cor ${color.name}`}
+                    title={color.name}
+                  />
+                ))}
+                <span>{selectedTop.colors[topColorIndex].name}</span>
+              </div>
+            </div>
+
+            <div className="outfit-group">
+              <div className="outfit-group-title">
+                <span>02</span>
+                <div>
+                  <p>Escolha a parte de baixo</p>
+                  <strong>{selectedBottom.label}</strong>
+                </div>
+              </div>
+              <div className="outfit-options">
+                {bottomOptions.map((option, index) => (
+                  <button
+                    key={option.label}
+                    className={bottomIndex === index ? "active" : ""}
+                    onClick={() => {
+                      setBottomIndex(index);
+                      setBottomColorIndex(0);
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <div className="fitting-swatches" aria-label="Cor da parte de baixo">
+                {selectedBottom.colors.map((color, index) => (
+                  <button
+                    key={color.name}
+                    className={bottomColorIndex === index ? "active" : ""}
+                    style={{ backgroundColor: color.hex }}
+                    onClick={() => setBottomColorIndex(index)}
+                    aria-label={`Parte de baixo na cor ${color.name}`}
+                    title={color.name}
+                  />
+                ))}
+                <span>{selectedBottom.colors[bottomColorIndex].name}</span>
+              </div>
+            </div>
+
+            <div className="look-actions">
+              {selectedTopProduct && (
+                <button className="button button-dark" onClick={() => openProduct(selectedTopProduct)}>
+                  Ver parte de cima
+                </button>
+              )}
+              {selectedBottomProduct && (
+                <button className="button button-outline" onClick={() => openProduct(selectedBottomProduct)}>
+                  Ver parte de baixo
+                </button>
+              )}
+            </div>
+            <p className="fitting-catalog-note">
+              A simulação ajuda a visualizar a combinação. Confirme cores,
+              disponibilidade e venda separada nos detalhes de cada peça.
+            </p>
+          </div>
+        </div>
+
+        <div className="size-finder">
+          <div className="size-finder-intro">
+            <p className="eyebrow">Descubra seu tamanho</p>
+            <h3>Suas medidas, uma escolha mais segura.</h3>
+            <p>
+              Informe suas medidas em centímetros para receber uma estimativa
+              separada para blusas e partes de baixo.
+            </p>
+            <div className="privacy-note">
+              <span aria-hidden="true">✓</span>
+              <p><strong>Privacidade:</strong> o cálculo acontece somente neste aparelho. Suas medidas não são salvas.</p>
+            </div>
+          </div>
+
+          <form className="measurement-form" onSubmit={submitMeasurements}>
+            <div className="measurement-fields">
+              {[
+                ["bust", "Busto", "Contorne a parte mais cheia"],
+                ["waist", "Cintura", "Meça a parte mais fina"],
+                ["hips", "Quadril", "Contorne a parte mais larga"],
+                ["height", "Altura", "Da cabeça aos pés"],
+              ].map(([field, label, hint]) => (
+                <label key={field}>
+                  <span>{label}</span>
+                  <small>{hint}</small>
+                  <span className="measurement-input">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min="1"
+                      max="250"
+                      step="0.5"
+                      placeholder="00"
+                      value={measurements[field as keyof typeof measurements]}
+                      onChange={(event) => {
+                        setMeasurements((current) => ({
+                          ...current,
+                          [field]: event.target.value,
+                        }));
+                        setSizeRecommendation(null);
+                      }}
+                      required
+                    />
+                    <b>cm</b>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <button className="button button-dark size-submit" type="submit">
+              Descobrir meus tamanhos
+            </button>
+
+            {sizeRecommendation && (
+              <div className="size-result" aria-live="polite">
+                <p>Sua estimativa RK</p>
+                <div>
+                  <span><small>Parte de cima</small><strong>{sizeRecommendation.top}</strong></span>
+                  <span><small>Parte de baixo</small><strong>{sizeRecommendation.bottom}</strong></span>
+                </div>
+                <p>{sizeRecommendation.length}</p>
+                <a
+                  className="text-link"
+                  href={`https://wa.me/5511953836092?text=${fittingMessage}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Confirmar medidas com a RK WEAR <span>↗</span>
+                </a>
+              </div>
+            )}
+            <p className="size-disclaimer">
+              Esta recomendação é uma estimativa corporal. A modelagem pode variar
+              entre as peças; confirme a tabela e o caimento antes da compra.
+            </p>
+          </form>
         </div>
       </section>
 
