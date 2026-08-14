@@ -162,6 +162,30 @@ const products: Product[] = [
       "Conjunto amarelo-claro com camisa fluida e short leve, apresentado na coleção Capítulo I.",
     available: false,
   },
+  {
+    id: 11,
+    name: "Conjunto Amarelo Transpassado",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-amarelo-transpassado-white.png",
+    tag: "Novidade",
+    colors: [{ name: "Amarelo-claro", hex: "#f2e3a6" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto amarelo-claro com top transpassado e calça fluida, pensado para um visual leve e marcante.",
+  },
+  {
+    id: 12,
+    name: "Blusa Assimétrica Preta",
+    category: "Blusas",
+    image: "/instagram/blusa-assimetrica-preta-white.png",
+    tag: "Novidade",
+    colors: [{ name: "Preto", hex: "#111111" }],
+    sizes: "P · M",
+    sizeOptions: ["P", "M"],
+    description:
+      "Blusa preta assimétrica de ombro único, com movimento e caimento leve para composições elegantes.",
+  },
 ];
 
 export default function Home() {
