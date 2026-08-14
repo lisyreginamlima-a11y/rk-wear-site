@@ -238,6 +238,66 @@ const products: Product[] = [
     description:
       "Blusa de manga longa com drapeado marcante e detalhes em transparência, pensada para produções sofisticadas.",
   },
+  {
+    id: 16,
+    name: "Conjunto Verde Cropped",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-verde-cropped-white.png",
+    tag: "Destaque do Instagram",
+    colors: [{ name: "Verde-oliva", hex: "#59614f" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto verde-oliva com top cropped estruturado, calça ampla de cintura alta e cinto delicado.",
+  },
+  {
+    id: 17,
+    name: "Conjunto Preto Recortado",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-preto-recortado-white.png",
+    tag: "Destaque do Instagram",
+    colors: [{ name: "Preto", hex: "#111111" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto preto com top de recortes marcantes e calça ampla, combinando atitude e elegância.",
+  },
+  {
+    id: 18,
+    name: "Conjunto Cacau Assimétrico",
+    category: "Conjuntos",
+    image: "/instagram/conjunto-cacau-assimetrico-white.png",
+    tag: "Destaque do Instagram",
+    colors: [{ name: "Cacau", hex: "#8b4f33" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Conjunto cacau com amarração frontal, short de cintura alta e sobreposição assimétrica fluida.",
+  },
+  {
+    id: 19,
+    name: "Macacão Preto com Renda",
+    category: "Macacões",
+    image: "/instagram/macacao-preto-renda-white.png",
+    tag: "Destaque do Instagram",
+    colors: [{ name: "Preto", hex: "#111111" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Macacão preto de pernas amplas, decote profundo com renda e faixa na cintura para um visual sofisticado.",
+  },
+  {
+    id: 20,
+    name: "Blusa Branca com Renda",
+    category: "Blusas",
+    image: "/instagram/blusa-branca-renda-white.png",
+    tag: "Destaque do Instagram",
+    colors: [{ name: "Branco", hex: "#f7f7f4" }],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Blusa branca leve com barra assimétrica em renda, criada para composições delicadas e versáteis.",
+  },
 ];
 
 export default function Home() {
@@ -495,7 +555,16 @@ export default function Home() {
         </div>
 
         <div className="filters" aria-label="Filtrar coleção">
-          {["Todos", "Essência", "RK Fitness", "Conjuntos", "Vestidos"].map((item) => (
+          {[
+            "Todos",
+            "Essência",
+            "RK Fitness",
+            "Conjuntos",
+            "Blusas",
+            "Macacões",
+            "Capítulo I",
+            "Vestidos",
+          ].map((item) => (
             <button
               key={item}
               className={category === item ? "active" : ""}
