@@ -186,6 +186,58 @@ const products: Product[] = [
     description:
       "Blusa preta assimétrica de ombro único, com movimento e caimento leve para composições elegantes.",
   },
+  {
+    id: 13,
+    name: "Blusas Manga Fluida",
+    category: "Blusas",
+    image: "/instagram/blusas-manga-fluida-white.png",
+    tag: "Destaque do Instagram",
+    colors: [
+      { name: "Azul-marinho", hex: "#17264d" },
+      { name: "Telha", hex: "#bd5d2b" },
+      { name: "Off-white", hex: "#f4f0e8" },
+      { name: "Preto", hex: "#171717" },
+    ],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Blusa leve de manga fluida, disponível em uma cartela versátil para composições elegantes e confortáveis.",
+  },
+  {
+    id: 14,
+    name: "Camisetas Essenciais",
+    category: "Blusas",
+    image: "/instagram/camisetas-essenciais-white.png",
+    tag: "Destaque do Instagram",
+    colors: [
+      { name: "Marrom", hex: "#633921" },
+      { name: "Bege", hex: "#cfc3a8" },
+      { name: "Off-white", hex: "#f5f0e8" },
+      { name: "Nude", hex: "#d8c1b1" },
+      { name: "Preto", hex: "#151515" },
+    ],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Camiseta essencial de caimento leve e visual minimalista, ideal para multiplicar as combinações do dia a dia.",
+  },
+  {
+    id: 15,
+    name: "Blusas Drapeadas",
+    category: "Blusas",
+    image: "/instagram/blusas-drapeadas-white.png",
+    tag: "Destaque do Instagram",
+    colors: [
+      { name: "Cacau", hex: "#70402e" },
+      { name: "Vinho", hex: "#722738" },
+      { name: "Off-white", hex: "#f4f0e9" },
+      { name: "Preto", hex: "#151515" },
+    ],
+    sizes: "Consulte tamanhos",
+    sizeOptions: ["P", "M", "G", "A confirmar"],
+    description:
+      "Blusa de manga longa com drapeado marcante e detalhes em transparência, pensada para produções sofisticadas.",
+  },
 ];
 
 export default function Home() {
