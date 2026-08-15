@@ -430,6 +430,15 @@ const bottomOptions: OutfitOption[] = [
   },
 ];
 
+function isLightGarmentColor(hex: string) {
+  const value = hex.replace("#", "");
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+  const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+  return luminance >= 185;
+}
+
 export default function Home() {
   const [category, setCategory] = useState("Todos");
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -642,6 +651,10 @@ export default function Home() {
   );
   const selectedBottomProduct = products.find(
     (product) => product.id === selectedBottom.productId,
+  );
+  const topColorIsLight = isLightGarmentColor(selectedTop.colors[topColorIndex].hex);
+  const bottomColorIsLight = isLightGarmentColor(
+    selectedBottom.colors[bottomColorIndex].hex,
   );
   const fittingMessage = sizeRecommendation
     ? encodeURIComponent(
@@ -871,25 +884,47 @@ export default function Home() {
                   draggable="false"
                 />
                 <div className={`garment-layer garment-top garment-top-${selectedTop.style}`}>
-                  <img src={selectedTop.overlay} alt="" draggable="false" />
+                  <img
+                    src={selectedTop.overlay}
+                    alt=""
+                    draggable="false"
+                    style={{
+                      filter: topColorIsLight
+                        ? "grayscale(1) brightness(2.2) contrast(0.62)"
+                        : "none",
+                    }}
+                  />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedTop.colors[topColorIndex].hex,
                         "--garment-mask": `url(${selectedTop.overlay})`,
+                        "--garment-opacity": topColorIsLight ? 0.86 : 0.68,
+                        "--garment-blend": topColorIsLight ? "normal" : "color",
                       } as React.CSSProperties
                     }
                   />
                 </div>
                 <div className={`garment-layer garment-bottom garment-bottom-${selectedBottom.style}`}>
-                  <img src={selectedBottom.overlay} alt="" draggable="false" />
+                  <img
+                    src={selectedBottom.overlay}
+                    alt=""
+                    draggable="false"
+                    style={{
+                      filter: bottomColorIsLight
+                        ? "grayscale(1) brightness(2.2) contrast(0.62)"
+                        : "none",
+                    }}
+                  />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedBottom.colors[bottomColorIndex].hex,
                         "--garment-mask": `url(${selectedBottom.overlay})`,
+                        "--garment-opacity": bottomColorIsLight ? 0.86 : 0.68,
+                        "--garment-blend": bottomColorIsLight ? "normal" : "color",
                       } as React.CSSProperties
                     }
                   />

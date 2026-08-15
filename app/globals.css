@@ -999,8 +999,8 @@ button.button {
   inset: 0;
   display: block;
   background: var(--garment-color);
-  opacity: 0.68;
-  mix-blend-mode: color;
+  opacity: var(--garment-opacity, 0.68);
+  mix-blend-mode: var(--garment-blend, color);
   -webkit-mask: var(--garment-mask) center / contain no-repeat;
   mask: var(--garment-mask) center / contain no-repeat;
 }
