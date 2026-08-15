@@ -1007,6 +1007,7 @@ button.button {
 
 .garment-top-flowy {
   --view-height: 180px;
+  --side-fit: 1.06;
   top: 78px;
   left: 66px;
   width: 200px;
@@ -1014,6 +1015,7 @@ button.button {
 
 .garment-top-draped {
   --view-height: 196px;
+  --side-fit: 1.08;
   top: 82px;
   left: 92px;
   width: 150px;
@@ -1021,6 +1023,7 @@ button.button {
 
 .garment-top-lace {
   --view-height: 198px;
+  --side-fit: 1.08;
   top: 83px;
   left: 83px;
   width: 167px;
@@ -1028,6 +1031,7 @@ button.button {
 
 .garment-top-asymmetric {
   --view-height: 213px;
+  --side-fit: 1.06;
   top: 83px;
   left: 78px;
   width: 177px;
@@ -1035,6 +1039,7 @@ button.button {
 
 .garment-top-cropped {
   --view-height: 128px;
+  --side-fit: 1.08;
   top: 83px;
   left: 108px;
   width: 118px;
@@ -1042,6 +1047,7 @@ button.button {
 
 .garment-bottom-courino {
   --view-height: 271px;
+  --side-fit: 1.34;
   top: 190px;
   left: 119px;
   width: 95px;
@@ -1049,6 +1055,7 @@ button.button {
 
 .garment-bottom-skirt {
   --view-height: 142px;
+  --side-fit: 1.12;
   top: 190px;
   left: 91px;
   width: 151px;
@@ -1056,6 +1063,7 @@ button.button {
 
 .garment-bottom-wide {
   --view-height: 277px;
+  --side-fit: 1.26;
   top: 190px;
   left: 111px;
   width: 111px;
@@ -1063,6 +1071,7 @@ button.button {
 
 .garment-bottom-shorts {
   --view-height: 100px;
+  --side-fit: 1.14;
   top: 190px;
   left: 114px;
   width: 105px;
@@ -1070,6 +1079,7 @@ button.button {
 
 .garment-bottom-tailored {
   --view-height: 273px;
+  --side-fit: 1.25;
   top: 190px;
   left: 112px;
   width: 109px;
@@ -1081,6 +1091,14 @@ button.button {
   left: 0;
   width: 100%;
   height: var(--view-height);
+}
+
+.mannequin-visual.view-side .garment-layer,
+.mannequin-visual.view-side-left .garment-layer {
+  transform: scaleX(var(--side-fit, 1));
+}
+
+.mannequin-visual.view-back .garment-layer {
   transform: none;
 }
 
