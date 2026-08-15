@@ -1006,73 +1006,90 @@ button.button {
 }
 
 .garment-top-flowy {
+  --view-height: 180px;
   top: 78px;
   left: 66px;
   width: 200px;
 }
 
 .garment-top-draped {
+  --view-height: 196px;
   top: 82px;
   left: 92px;
   width: 150px;
 }
 
 .garment-top-lace {
+  --view-height: 198px;
   top: 83px;
   left: 83px;
   width: 167px;
 }
 
 .garment-top-asymmetric {
+  --view-height: 213px;
   top: 83px;
   left: 78px;
   width: 177px;
 }
 
 .garment-top-cropped {
+  --view-height: 128px;
   top: 83px;
   left: 108px;
   width: 118px;
 }
 
 .garment-bottom-courino {
+  --view-height: 271px;
   top: 190px;
   left: 119px;
   width: 95px;
 }
 
 .garment-bottom-skirt {
+  --view-height: 142px;
   top: 190px;
   left: 91px;
   width: 151px;
 }
 
 .garment-bottom-wide {
+  --view-height: 277px;
   top: 190px;
   left: 111px;
   width: 111px;
 }
 
 .garment-bottom-shorts {
+  --view-height: 100px;
   top: 190px;
   left: 114px;
   width: 105px;
 }
 
 .garment-bottom-tailored {
+  --view-height: 273px;
   top: 190px;
   left: 112px;
   width: 109px;
 }
 
 .mannequin-visual.view-side .garment-layer,
-.mannequin-visual.view-side-left .garment-layer {
-  transform: scaleX(0.46);
+.mannequin-visual.view-side-left .garment-layer,
+.mannequin-visual.view-back .garment-layer {
+  left: 0;
+  width: 100%;
+  height: var(--view-height);
+  transform: none;
 }
 
-.mannequin-visual.view-back .garment-layer {
-  transform: scaleX(-1);
-  filter: brightness(0.82) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.22));
+.mannequin-visual.view-side .garment-layer img,
+.mannequin-visual.view-side-left .garment-layer img,
+.mannequin-visual.view-back .garment-layer img {
+  width: auto;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .mannequin-visual.view-side-left {

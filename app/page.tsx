@@ -30,6 +30,8 @@ type OutfitOption = {
   label: string;
   style: string;
   overlay: string;
+  overlaySide: string;
+  overlayBack: string;
   colors: { name: string; hex: string }[];
 };
 
@@ -320,6 +322,8 @@ const topOptions: OutfitOption[] = [
     label: "Manga fluida",
     style: "flowy",
     overlay: "/mannequin/garments/top-flowy.png",
+    overlaySide: "/mannequin/garments/top-flowy-side.png",
+    overlayBack: "/mannequin/garments/top-flowy-back.png",
     colors: [
       { name: "Azul-marinho", hex: "#17264d" },
       { name: "Telha", hex: "#bd5d2b" },
@@ -332,6 +336,8 @@ const topOptions: OutfitOption[] = [
     label: "Drapeada",
     style: "draped",
     overlay: "/mannequin/garments/top-draped.png",
+    overlaySide: "/mannequin/garments/top-draped-side.png",
+    overlayBack: "/mannequin/garments/top-draped-back.png",
     colors: [
       { name: "Cacau", hex: "#70402e" },
       { name: "Vinho", hex: "#722738" },
@@ -344,6 +350,8 @@ const topOptions: OutfitOption[] = [
     label: "Renda branca",
     style: "lace",
     overlay: "/mannequin/garments/top-lace.png",
+    overlaySide: "/mannequin/garments/top-lace-side.png",
+    overlayBack: "/mannequin/garments/top-lace-back.png",
     colors: [{ name: "Branco", hex: "#f7f7f4" }],
   },
   {
@@ -351,6 +359,8 @@ const topOptions: OutfitOption[] = [
     label: "Assimétrica",
     style: "asymmetric",
     overlay: "/mannequin/garments/top-asymmetric.png",
+    overlaySide: "/mannequin/garments/top-asymmetric-side.png",
+    overlayBack: "/mannequin/garments/top-asymmetric-back.png",
     colors: [{ name: "Preto", hex: "#111111" }],
   },
   {
@@ -358,6 +368,8 @@ const topOptions: OutfitOption[] = [
     label: "Cropped",
     style: "cropped",
     overlay: "/mannequin/garments/top-cropped.png",
+    overlaySide: "/mannequin/garments/top-cropped-side.png",
+    overlayBack: "/mannequin/garments/top-cropped-back.png",
     colors: [{ name: "Verde-oliva", hex: "#59614f" }],
   },
 ];
@@ -368,6 +380,8 @@ const bottomOptions: OutfitOption[] = [
     label: "Calça courino",
     style: "courino",
     overlay: "/mannequin/garments/bottom-courino.png",
+    overlaySide: "/mannequin/garments/bottom-courino-side.png",
+    overlayBack: "/mannequin/garments/bottom-courino-back.png",
     colors: [{ name: "Preto", hex: "#111111" }],
   },
   {
@@ -375,6 +389,8 @@ const bottomOptions: OutfitOption[] = [
     label: "Saia Brisa",
     style: "skirt",
     overlay: "/mannequin/garments/bottom-skirt.png",
+    overlaySide: "/mannequin/garments/bottom-skirt-side.png",
+    overlayBack: "/mannequin/garments/bottom-skirt-back.png",
     colors: [
       { name: "Marrom", hex: "#684a38" },
       { name: "Preto", hex: "#171717" },
@@ -387,6 +403,8 @@ const bottomOptions: OutfitOption[] = [
     label: "Pantalona xadrez",
     style: "wide",
     overlay: "/mannequin/garments/bottom-wide.png",
+    overlaySide: "/mannequin/garments/bottom-wide-side.png",
+    overlayBack: "/mannequin/garments/bottom-wide-back.png",
     colors: [
       { name: "Preto", hex: "#1d1d1d" },
       { name: "Cinza", hex: "#8a837b" },
@@ -397,6 +415,8 @@ const bottomOptions: OutfitOption[] = [
     label: "Short cacau",
     style: "shorts",
     overlay: "/mannequin/garments/bottom-shorts.png",
+    overlaySide: "/mannequin/garments/bottom-shorts-side.png",
+    overlayBack: "/mannequin/garments/bottom-shorts-back.png",
     colors: [{ name: "Cacau", hex: "#8b4f33" }],
   },
   {
@@ -404,6 +424,8 @@ const bottomOptions: OutfitOption[] = [
     label: "Calça verde",
     style: "tailored",
     overlay: "/mannequin/garments/bottom-tailored.png",
+    overlaySide: "/mannequin/garments/bottom-tailored-side.png",
+    overlayBack: "/mannequin/garments/bottom-tailored-back.png",
     colors: [{ name: "Verde-oliva", hex: "#59614f" }],
   },
 ];
@@ -642,6 +664,18 @@ export default function Home() {
       : mannequinView === "back"
         ? "/mannequin/rk-mannequin-back.png"
         : "/mannequin/rk-mannequin-side.png";
+  const topOverlay =
+    mannequinView === "front"
+      ? selectedTop.overlay
+      : mannequinView === "back"
+        ? selectedTop.overlayBack
+        : selectedTop.overlaySide;
+  const bottomOverlay =
+    mannequinView === "front"
+      ? selectedBottom.overlay
+      : mannequinView === "back"
+        ? selectedBottom.overlayBack
+        : selectedBottom.overlaySide;
   const fittingMessage = sizeRecommendation
     ? encodeURIComponent(
         `Olá, RK WEAR! Usei o provador do site. Minhas medidas são: busto ${measurements.bust} cm, cintura ${measurements.waist} cm, quadril ${measurements.hips} cm e altura ${measurements.height} cm. A estimativa foi ${sizeRecommendation.top} para parte de cima e ${sizeRecommendation.bottom} para parte de baixo. Pode confirmar o tamanho das peças?`,
@@ -891,25 +925,25 @@ export default function Home() {
                   draggable="false"
                 />
                 <div className={`garment-layer garment-top garment-top-${selectedTop.style}`}>
-                  <img src={selectedTop.overlay} alt="" draggable="false" />
+                  <img src={topOverlay} alt="" draggable="false" />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedTop.colors[topColorIndex].hex,
-                        "--garment-mask": `url(${selectedTop.overlay})`,
+                        "--garment-mask": `url(${topOverlay})`,
                       } as React.CSSProperties
                     }
                   />
                 </div>
                 <div className={`garment-layer garment-bottom garment-bottom-${selectedBottom.style}`}>
-                  <img src={selectedBottom.overlay} alt="" draggable="false" />
+                  <img src={bottomOverlay} alt="" draggable="false" />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedBottom.colors[bottomColorIndex].hex,
-                        "--garment-mask": `url(${selectedBottom.overlay})`,
+                        "--garment-mask": `url(${bottomOverlay})`,
                       } as React.CSSProperties
                     }
                   />
