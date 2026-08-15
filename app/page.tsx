@@ -447,8 +447,6 @@ export default function Home() {
   const [bottomIndex, setBottomIndex] = useState(0);
   const [topColorIndex, setTopColorIndex] = useState(0);
   const [bottomColorIndex, setBottomColorIndex] = useState(0);
-  const [mannequinRotation, setMannequinRotation] = useState(0);
-  const [dragX, setDragX] = useState<number | null>(null);
   const [measurements, setMeasurements] = useState({
     bust: "",
     waist: "",
@@ -595,10 +593,6 @@ export default function Home() {
     event.currentTarget.reset();
   }
 
-  function rotateMannequin(change: number) {
-    setMannequinRotation((current) => (current + change + 360) % 360);
-  }
-
   function calculateRecommendedSize(value: number, measurement: "bust" | "waist" | "hips") {
     const limits = {
       bust: [82, 88, 94, 102],
@@ -649,33 +643,6 @@ export default function Home() {
   const selectedBottomProduct = products.find(
     (product) => product.id === selectedBottom.productId,
   );
-  const normalizedRotation = (mannequinRotation + 360) % 360;
-  const mannequinView =
-    normalizedRotation >= 45 && normalizedRotation < 135
-      ? "side"
-      : normalizedRotation >= 135 && normalizedRotation < 225
-        ? "back"
-        : normalizedRotation >= 225 && normalizedRotation < 315
-          ? "side-left"
-          : "front";
-  const mannequinImage =
-    mannequinView === "front"
-      ? "/mannequin/rk-mannequin-front.png"
-      : mannequinView === "back"
-        ? "/mannequin/rk-mannequin-back.png"
-        : "/mannequin/rk-mannequin-side.png";
-  const topOverlay =
-    mannequinView === "front"
-      ? selectedTop.overlay
-      : mannequinView === "back"
-        ? selectedTop.overlayBack
-        : selectedTop.overlaySide;
-  const bottomOverlay =
-    mannequinView === "front"
-      ? selectedBottom.overlay
-      : mannequinView === "back"
-        ? selectedBottom.overlayBack
-        : selectedBottom.overlaySide;
   const fittingMessage = sizeRecommendation
     ? encodeURIComponent(
         `Olá, RK WEAR! Usei o provador do site. Minhas medidas são: busto ${measurements.bust} cm, cintura ${measurements.waist} cm, quadril ${measurements.hips} cm e altura ${measurements.height} cm. A estimativa foi ${sizeRecommendation.top} para parte de cima e ${sizeRecommendation.bottom} para parte de baixo. Pode confirmar o tamanho das peças?`,
@@ -875,42 +842,21 @@ export default function Home() {
       <section className="virtual-fitting section" id="provador">
         <div className="section-heading fitting-heading">
           <div>
-            <p className="eyebrow">Provador virtual RK</p>
-            <h2>Monte o look. Gire. Experimente.</h2>
+            <p className="eyebrow">Provador de looks RK</p>
+            <h2>Escolha. Combine. Experimente.</h2>
           </div>
           <p>
-            Combine blusas e partes de baixo do catálogo em um manequim 360°.
-            Arraste o manequim ou use as setas para observar o look.
+            Combine blusas e partes de baixo do catálogo em um manequim frontal,
+            com as roupas encaixadas rente ao corpo.
           </p>
         </div>
 
         <div className="fitting-studio">
           <div className="mannequin-panel">
-            <div
-              className={`mannequin-stage ${dragX !== null ? "is-dragging" : ""}`}
-              onPointerDown={(event) => {
-                setDragX(event.clientX);
-                event.currentTarget.setPointerCapture(event.pointerId);
-              }}
-              onPointerMove={(event) => {
-                if (dragX === null) return;
-                const movement = event.clientX - dragX;
-                setMannequinRotation(
-                  (current) => (current + movement * 0.75 + 360) % 360,
-                );
-                setDragX(event.clientX);
-              }}
-              onPointerUp={() => setDragX(null)}
-              onPointerCancel={() => setDragX(null)}
-              aria-label="Manequim virtual giratório"
-            >
-              <span className="rotation-badge">
-                360° · {Math.round(mannequinRotation)}°
-              </span>
-              <span className="drag-hint">Arraste para girar</span>
+            <div className="mannequin-stage" aria-label="Manequim frontal com o look escolhido">
               <div className="mannequin-shadow" />
               <div
-                className={`mannequin-visual view-${mannequinView}`}
+                className="mannequin-visual view-front"
                 style={
                   {
                     "--top-color": selectedTop.colors[topColorIndex].hex,
@@ -920,52 +866,35 @@ export default function Home() {
               >
                 <img
                   className="mannequin-model"
-                  src={mannequinImage}
+                  src="/mannequin/rk-mannequin-front.png"
                   alt="Manequim técnico 3D com malha cinza"
                   draggable="false"
                 />
                 <div className={`garment-layer garment-top garment-top-${selectedTop.style}`}>
-                  <img src={topOverlay} alt="" draggable="false" />
+                  <img src={selectedTop.overlay} alt="" draggable="false" />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedTop.colors[topColorIndex].hex,
-                        "--garment-mask": `url(${topOverlay})`,
+                        "--garment-mask": `url(${selectedTop.overlay})`,
                       } as React.CSSProperties
                     }
                   />
                 </div>
                 <div className={`garment-layer garment-bottom garment-bottom-${selectedBottom.style}`}>
-                  <img src={bottomOverlay} alt="" draggable="false" />
+                  <img src={selectedBottom.overlay} alt="" draggable="false" />
                   <span
                     className="garment-tint"
                     style={
                       {
                         "--garment-color": selectedBottom.colors[bottomColorIndex].hex,
-                        "--garment-mask": `url(${bottomOverlay})`,
+                        "--garment-mask": `url(${selectedBottom.overlay})`,
                       } as React.CSSProperties
                     }
                   />
                 </div>
               </div>
-            </div>
-
-            <div className="rotation-controls" aria-label="Controles de rotação">
-              <button onClick={() => rotateMannequin(-45)} aria-label="Girar para a esquerda">
-                ←
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="359"
-                value={Math.round(mannequinRotation)}
-                onChange={(event) => setMannequinRotation(Number(event.target.value))}
-                aria-label="Ângulo do manequim"
-              />
-              <button onClick={() => rotateMannequin(45)} aria-label="Girar para a direita">
-                →
-              </button>
             </div>
             <div className="selected-look">
               <span>Seu look</span>
