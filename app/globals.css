@@ -950,6 +950,134 @@ button.button {
   border-radius: 0 0 8px 8px;
 }
 
+/* Manequim técnico em quatro ângulos; mantém as roupas como camadas do catálogo. */
+.mannequin-visual {
+  position: relative;
+  z-index: 2;
+  width: 333px;
+  height: 500px;
+  transform-style: preserve-3d;
+  transition: transform 0.22s ease, opacity 0.2s ease;
+}
+
+.mannequin-model {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 18px 15px rgba(0, 0, 0, 0.24));
+}
+
+.mannequin-visual.view-side-left {
+  transform: scaleX(-1);
+}
+
+.mannequin-visual .mannequin-top,
+.mannequin-visual .mannequin-bottom,
+.mannequin-visual .top-sleeve,
+.mannequin-visual .bottom-leg {
+  background-color: var(--top-color);
+  background-image:
+    linear-gradient(105deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.08)),
+    var(--top-image);
+  background-repeat: no-repeat;
+  background-size: cover, var(--top-image-size);
+  background-position: center, var(--top-image-position);
+  box-shadow:
+    inset -9px 0 16px rgba(0, 0, 0, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.mannequin-visual .mannequin-top {
+  top: 89px;
+  left: 99px;
+  width: 135px;
+  height: 148px;
+}
+
+.mannequin-visual .top-sleeve {
+  background-position: center, var(--top-image-position);
+}
+
+.mannequin-visual .mannequin-bottom,
+.mannequin-visual .bottom-leg {
+  background-color: var(--bottom-color);
+  background-image:
+    linear-gradient(105deg, rgba(255, 255, 255, 0.09), rgba(0, 0, 0, 0.11)),
+    var(--bottom-image);
+  background-size: cover, var(--bottom-image-size);
+  background-position: center, var(--bottom-image-position);
+}
+
+.mannequin-visual .mannequin-bottom {
+  top: 190px;
+  left: 105px;
+  width: 123px;
+  height: 63px;
+}
+
+.mannequin-visual .bottom-leg {
+  height: 232px;
+}
+
+.mannequin-visual .top-cropped {
+  height: 105px;
+}
+
+.mannequin-visual .bottom-skirt {
+  height: 172px;
+}
+
+.mannequin-visual .bottom-shorts {
+  height: 83px;
+}
+
+.mannequin-visual.view-side .mannequin-top,
+.mannequin-visual.view-side-left .mannequin-top {
+  top: 88px;
+  left: 135px;
+  width: 76px;
+  height: 148px;
+  clip-path: polygon(20% 0, 80% 0, 90% 45%, 100% 100%, 0 100%, 10% 45%);
+}
+
+.mannequin-visual.view-side .top-sleeve,
+.mannequin-visual.view-side-left .top-sleeve {
+  display: none;
+}
+
+.mannequin-visual.view-side .mannequin-bottom,
+.mannequin-visual.view-side-left .mannequin-bottom {
+  top: 191px;
+  left: 139px;
+  width: 70px;
+}
+
+.mannequin-visual.view-side .bottom-leg,
+.mannequin-visual.view-side-left .bottom-leg {
+  width: 38px;
+}
+
+.mannequin-visual.view-side .bottom-left,
+.mannequin-visual.view-side-left .bottom-left {
+  left: 6px;
+}
+
+.mannequin-visual.view-side .bottom-right,
+.mannequin-visual.view-side-left .bottom-right {
+  right: 2px;
+}
+
+.mannequin-visual.view-back .mannequin-top,
+.mannequin-visual.view-back .mannequin-bottom,
+.mannequin-visual.view-back .top-sleeve,
+.mannequin-visual.view-back .bottom-leg {
+  filter: saturate(0.92) brightness(0.86);
+}
+
 .rotation-controls {
   height: 58px;
   display: grid;

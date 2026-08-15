@@ -29,7 +29,10 @@ type OutfitOption = {
   productId: number;
   label: string;
   style: string;
-  colors: { name: string; hex: string }[];
+  image: string;
+  imageSize: string;
+  imagePosition: string;
+  colors: { name: string; hex: string; imagePosition?: string }[];
 };
 
 type SizeRecommendation = {
@@ -318,40 +321,55 @@ const topOptions: OutfitOption[] = [
     productId: 13,
     label: "Manga fluida",
     style: "flowy",
+    image: "/instagram/blusas-manga-fluida-white.png",
+    imageSize: "390% auto",
+    imagePosition: "10% 42%",
     colors: [
-      { name: "Azul-marinho", hex: "#17264d" },
-      { name: "Telha", hex: "#bd5d2b" },
-      { name: "Off-white", hex: "#f4f0e8" },
-      { name: "Preto", hex: "#171717" },
+      { name: "Azul-marinho", hex: "#17264d", imagePosition: "7% 42%" },
+      { name: "Telha", hex: "#bd5d2b", imagePosition: "36% 42%" },
+      { name: "Off-white", hex: "#f4f0e8", imagePosition: "66% 42%" },
+      { name: "Preto", hex: "#171717", imagePosition: "95% 42%" },
     ],
   },
   {
     productId: 15,
     label: "Drapeada",
     style: "draped",
+    image: "/instagram/blusas-drapeadas-white.png",
+    imageSize: "390% auto",
+    imagePosition: "8% 39%",
     colors: [
-      { name: "Cacau", hex: "#70402e" },
-      { name: "Vinho", hex: "#722738" },
-      { name: "Off-white", hex: "#f4f0e9" },
-      { name: "Preto", hex: "#151515" },
+      { name: "Cacau", hex: "#70402e", imagePosition: "7% 39%" },
+      { name: "Vinho", hex: "#722738", imagePosition: "36% 39%" },
+      { name: "Off-white", hex: "#f4f0e9", imagePosition: "66% 39%" },
+      { name: "Preto", hex: "#151515", imagePosition: "95% 39%" },
     ],
   },
   {
     productId: 20,
     label: "Renda branca",
     style: "lace",
+    image: "/instagram/blusa-branca-renda-white.png",
+    imageSize: "230% auto",
+    imagePosition: "50% 31%",
     colors: [{ name: "Branco", hex: "#f7f7f4" }],
   },
   {
     productId: 12,
     label: "Assimétrica",
     style: "asymmetric",
+    image: "/instagram/blusa-assimetrica-preta-white.png",
+    imageSize: "205% auto",
+    imagePosition: "50% 27%",
     colors: [{ name: "Preto", hex: "#111111" }],
   },
   {
     productId: 16,
     label: "Cropped",
     style: "cropped",
+    image: "/instagram/conjunto-verde-cropped-white.png",
+    imageSize: "200% auto",
+    imagePosition: "50% 26%",
     colors: [{ name: "Verde-oliva", hex: "#59614f" }],
   },
 ];
@@ -361,12 +379,18 @@ const bottomOptions: OutfitOption[] = [
     productId: 2,
     label: "Calça courino",
     style: "courino",
+    image: "/instagram/calca-courino-zara-white.png",
+    imageSize: "230% auto",
+    imagePosition: "50% 66%",
     colors: [{ name: "Preto", hex: "#111111" }],
   },
   {
     productId: 3,
     label: "Saia Brisa",
     style: "skirt",
+    image: "/instagram/aura-brisa-marrom.jpg",
+    imageSize: "220% auto",
+    imagePosition: "50% 62%",
     colors: [
       { name: "Marrom", hex: "#684a38" },
       { name: "Preto", hex: "#171717" },
@@ -378,6 +402,9 @@ const bottomOptions: OutfitOption[] = [
     productId: 4,
     label: "Pantalona xadrez",
     style: "wide",
+    image: "/instagram/charlotte-xadrez.jpg",
+    imageSize: "205% auto",
+    imagePosition: "50% 65%",
     colors: [
       { name: "Preto", hex: "#1d1d1d" },
       { name: "Cinza", hex: "#8a837b" },
@@ -387,12 +414,18 @@ const bottomOptions: OutfitOption[] = [
     productId: 18,
     label: "Short cacau",
     style: "shorts",
+    image: "/instagram/conjunto-cacau-assimetrico-white.png",
+    imageSize: "210% auto",
+    imagePosition: "50% 53%",
     colors: [{ name: "Cacau", hex: "#8b4f33" }],
   },
   {
     productId: 16,
     label: "Calça verde",
     style: "tailored",
+    image: "/instagram/conjunto-verde-cropped-white.png",
+    imageSize: "205% auto",
+    imagePosition: "50% 64%",
     colors: [{ name: "Verde-oliva", hex: "#59614f" }],
   },
 ];
@@ -616,6 +649,21 @@ export default function Home() {
   const selectedBottomProduct = products.find(
     (product) => product.id === selectedBottom.productId,
   );
+  const normalizedRotation = (mannequinRotation + 360) % 360;
+  const mannequinView =
+    normalizedRotation >= 45 && normalizedRotation < 135
+      ? "side"
+      : normalizedRotation >= 135 && normalizedRotation < 225
+        ? "back"
+        : normalizedRotation >= 225 && normalizedRotation < 315
+          ? "side-left"
+          : "front";
+  const mannequinImage =
+    mannequinView === "front"
+      ? "/mannequin/rk-mannequin-front.png"
+      : mannequinView === "back"
+        ? "/mannequin/rk-mannequin-back.png"
+        : "/mannequin/rk-mannequin-side.png";
   const fittingMessage = sizeRecommendation
     ? encodeURIComponent(
         `Olá, RK WEAR! Usei o provador do site. Minhas medidas são: busto ${measurements.bust} cm, cintura ${measurements.waist} cm, quadril ${measurements.hips} cm e altura ${measurements.height} cm. A estimativa foi ${sizeRecommendation.top} para parte de cima e ${sizeRecommendation.bottom} para parte de baixo. Pode confirmar o tamanho das peças?`,
@@ -850,22 +898,28 @@ export default function Home() {
               <span className="drag-hint">Arraste para girar</span>
               <div className="mannequin-shadow" />
               <div
-                className="mannequin"
+                className={`mannequin-visual view-${mannequinView}`}
                 style={
                   {
-                    transform: `rotateY(${mannequinRotation}deg)`,
                     "--top-color": selectedTop.colors[topColorIndex].hex,
                     "--bottom-color": selectedBottom.colors[bottomColorIndex].hex,
+                    "--top-image": `url(${selectedTop.image})`,
+                    "--top-image-size": selectedTop.imageSize,
+                    "--top-image-position":
+                      selectedTop.colors[topColorIndex].imagePosition ||
+                      selectedTop.imagePosition,
+                    "--bottom-image": `url(${selectedBottom.image})`,
+                    "--bottom-image-size": selectedBottom.imageSize,
+                    "--bottom-image-position": selectedBottom.imagePosition,
                   } as React.CSSProperties
                 }
               >
-                <div className="mannequin-head"><span /></div>
-                <div className="mannequin-neck" />
-                <div className="mannequin-torso" />
-                <div className="mannequin-arm arm-left" />
-                <div className="mannequin-arm arm-right" />
-                <div className="mannequin-leg leg-left" />
-                <div className="mannequin-leg leg-right" />
+                <img
+                  className="mannequin-model"
+                  src={mannequinImage}
+                  alt="Manequim técnico 3D com malha cinza"
+                  draggable="false"
+                />
                 <div className={`mannequin-top top-${selectedTop.style}`}>
                   <i className="top-sleeve sleeve-left" />
                   <i className="top-sleeve sleeve-right" />
